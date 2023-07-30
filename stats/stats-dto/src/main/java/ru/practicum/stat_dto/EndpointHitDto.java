@@ -12,12 +12,10 @@ import javax.validation.constraints.NotEmpty;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EndpointHitDto {
-    private Integer id;
     @NotEmpty
     private String app;
     @NotEmpty
     private String uri;
-    @NotEmpty
     private String ip;
     @NotEmpty
     private String timestamp;
