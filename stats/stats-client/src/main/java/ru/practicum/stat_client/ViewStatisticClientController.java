@@ -26,7 +26,6 @@ public class ViewStatisticClientController {
                                                       @RequestParam(name = "unique", defaultValue = "false")
                                                       boolean unique) {
 
-
         return viewStatisticClient.getViewStatistic(start, end, uris, unique);
     }
 }
