@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
+import ru.practicum.stat_dto.EndpointHitDto;
 
 @Service
 public class EndpointHitClient extends BaseClient {
@@ -22,7 +23,7 @@ public class EndpointHitClient extends BaseClient {
         );
     }
 
-    protected <T> ResponseEntity<Object> addHit(T body) {
-        return post("", body);
+    public ResponseEntity<Object> addHit(EndpointHitDto body) {
+        return post("", null, body);
     }
 }

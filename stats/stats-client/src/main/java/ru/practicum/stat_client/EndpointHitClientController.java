@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,7 @@ public class EndpointHitClientController {
 
     @PostMapping
     public ResponseEntity<Object> addHit(@RequestBody @Valid EndpointHitDto endpointHitDto, HttpServletRequest request) {
+
         endpointHitDto.setIp(request.getRemoteAddr());
 
         log.info("addHit: {}", endpointHitDto);

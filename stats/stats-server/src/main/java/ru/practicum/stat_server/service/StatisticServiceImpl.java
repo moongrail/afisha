@@ -29,26 +29,31 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
-        List<ViewStatsDto> viewStats = new ArrayList<>();
+
         if (unique) {
-            if (uris.length == 0) {
-                viewStats = statisticRepository.getStatsByUniqueWithoutUri(start, end);
+            if (uris == null) {
+                return convertToViewStatDto(statisticRepository.getStatsByUniqueWithoutUri(start, end));
             }
-            viewStats = statisticRepository.getStatsByUnique(start, end, uris);
+            return convertToViewStatDto(statisticRepository.getStatsByUnique(start, end, uris));
         } else {
-            if (uris.length == 0) {
-                viewStats = statisticRepository.getStatsByUriWithoutUri(start, end);
+            if (uris == null) {
+                return convertToViewStatDto(statisticRepository.getStatsByUriWithoutUnique(start, end));
             }
-            viewStats = statisticRepository.getAllStats(start, end, uris);
+            return convertToViewStatDto(statisticRepository.getAllStats(start, end, uris));
         }
-//        for (Object[] data : statsData) {
-//            String app = (String) data[0];
-//            String uri = (String) data[1];
-//            Integer hits = (Integer) data[2];
-//            ViewStatsDto viewStatsDto = toResponseView(app, uri, hits);
-//
-//            viewStats.add(viewStatsDto);
-//        }
+    }
+
+    private static List<ViewStatsDto> convertToViewStatDto(List<Object[]> statsData) {
+        List<ViewStatsDto> viewStats = new ArrayList<>();
+
+        for (Object[] data : statsData) {
+            String app = (String) data[0];
+            String uri = (String) data[1];
+            Long hits = (Long) data[2];
+            ViewStatsDto viewStatsDto = toResponseView(app, uri, hits);
+
+            viewStats.add(viewStatsDto);
+        }
 
         return viewStats;
     }

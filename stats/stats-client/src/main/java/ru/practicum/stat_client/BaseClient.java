@@ -16,12 +16,28 @@ public class BaseClient {
         this.restTemplate = restTemplate;
     }
 
-    protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
+    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path, @Nullable Map<String, Object> parameters, @Nullable T body) {
+        HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
+
+        ResponseEntity<Object> statisticServerResponse;
+        try {
+            if (parameters != null) {
+                statisticServerResponse = restTemplate.exchange(path, method, requestEntity, Object.class, parameters);
+            } else {
+                statisticServerResponse = restTemplate.exchange(path, method, requestEntity, Object.class);
+            }
+        } catch (HttpStatusCodeException e) {
+            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
+        }
+        return prepareGatewayResponse(statisticServerResponse);
     }
 
-    protected <T> ResponseEntity<Object> post(String path, T body) {
-        return post(path, body);
+    private HttpHeaders defaultHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+        return headers;
     }
 
     private static ResponseEntity<Object> prepareGatewayResponse(ResponseEntity<Object> response) {
@@ -38,28 +54,11 @@ public class BaseClient {
         return responseBuilder.build();
     }
 
-    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path,
-                                                          @Nullable Map<String, Object> parameters, @Nullable T body) {
-        HttpEntity<T> requestEntity = new HttpEntity<>(body);
-
-        ResponseEntity<Object> statClientResponse;
-        try {
-            if (parameters != null) {
-                statClientResponse = restTemplate.exchange(path, method, requestEntity, Object.class, parameters);
-            } else {
-                statClientResponse = restTemplate.exchange(path, method, requestEntity, Object.class);
-            }
-        } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
-        }
-        return prepareGatewayResponse(statClientResponse);
+    protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
+        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
 
-    private HttpHeaders defaultHeaders(Long userId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-
-        return headers;
+    protected <T> ResponseEntity<Object> post(String path, @Nullable Map<String, Object> parameters, T body) {
+        return makeAndSendRequest(HttpMethod.POST, path, parameters, body);
     }
 }
