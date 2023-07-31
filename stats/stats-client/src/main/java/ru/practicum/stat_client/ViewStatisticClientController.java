@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.Map;
 
 @Controller
 @RequestMapping(path = "/stats")
@@ -26,7 +24,7 @@ public class ViewStatisticClientController {
                                                       @RequestParam(name = "end") LocalDateTime end,
                                                       @RequestParam(name = "uris") String[] uris,
                                                       @RequestParam(name = "unique", defaultValue = "false")
-                                          boolean unique) {
+                                                      boolean unique) {
 
 
         return viewStatisticClient.getViewStatistic(start, end, uris, unique);

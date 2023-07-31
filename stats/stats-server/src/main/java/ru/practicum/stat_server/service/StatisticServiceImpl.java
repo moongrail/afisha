@@ -20,11 +20,26 @@ import static ru.practicum.stat_server.mapper.StatisticMapper.*;
 public class StatisticServiceImpl implements StatisticService {
     private final StatisticRepository statisticRepository;
 
+    private static List<ViewStatsDto> convertToViewStatDto(List<Object[]> statsData) {
+        List<ViewStatsDto> viewStats = new ArrayList<>();
+
+        for (Object[] data : statsData) {
+            String app = (String) data[0];
+            String uri = (String) data[1];
+            Long hits = (Long) data[2];
+            ViewStatsDto viewStatsDto = toResponseView(app, uri, hits);
+
+            viewStats.add(viewStatsDto);
+        }
+
+        return viewStats;
+    }
+
     @Override
     public EndpointHitDto addHit(EndpointHitDto endpointHitDto) {
-        Statistic statistic = fromEndpointHitDto(endpointHitDto);
+        Statistic statistic = statisticRepository.save(fromEndpointHitDto(endpointHitDto));
         log.info("Statistic добавлена: {}", statistic);
-        return toEndpointHitDto(statisticRepository.save(statistic));
+        return toEndpointHitDto(statistic);
     }
 
     @Override
@@ -41,20 +56,5 @@ public class StatisticServiceImpl implements StatisticService {
             }
             return convertToViewStatDto(statisticRepository.getAllStats(start, end, uris));
         }
-    }
-
-    private static List<ViewStatsDto> convertToViewStatDto(List<Object[]> statsData) {
-        List<ViewStatsDto> viewStats = new ArrayList<>();
-
-        for (Object[] data : statsData) {
-            String app = (String) data[0];
-            String uri = (String) data[1];
-            Long hits = (Long) data[2];
-            ViewStatsDto viewStatsDto = toResponseView(app, uri, hits);
-
-            viewStats.add(viewStatsDto);
-        }
-
-        return viewStats;
     }
 }

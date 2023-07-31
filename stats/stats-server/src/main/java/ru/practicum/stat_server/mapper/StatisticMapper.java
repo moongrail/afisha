@@ -5,8 +5,6 @@ import ru.practicum.stat_dto.EndpointHitDto;
 import ru.practicum.stat_dto.ViewStatsDto;
 import ru.practicum.stat_server.model.Statistic;
 
-import java.time.LocalDateTime;
-
 @UtilityClass
 public class StatisticMapper {
     public static ViewStatsDto toResponseView(String app, String uri, Long hits) {
