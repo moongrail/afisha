@@ -18,6 +18,7 @@ public class EndpointHitDto {
     private String app;
     @NotEmpty
     private String uri;
+    @NotEmpty
     private String ip;
     @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

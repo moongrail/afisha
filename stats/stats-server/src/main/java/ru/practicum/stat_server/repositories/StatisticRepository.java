@@ -42,7 +42,7 @@ public interface StatisticRepository extends JpaRepository<Statistic, Long> {
             "AND s.uri IN :uris " +
             "GROUP BY s.app, s.uri " +
             "ORDER BY COUNT(s.ip) DESC")
-    List<Object[]> getAllStats(@Param("start") LocalDateTime start,
-                               @Param("end") LocalDateTime end,
-                               @Param("uris") String[] uris);
+    List<Object[]> getAllStats(LocalDateTime start,
+                               LocalDateTime end,
+                               String[] uris);
 }
