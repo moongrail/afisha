@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "stat-server.url",
+      "type": "java.lang.String",
+      "description": "Description for stat-server.url."
+    }
+  ]
+}
