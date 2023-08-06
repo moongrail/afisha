@@ -11,7 +11,7 @@ import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repositories.CategoryRepository;
 
 import static ru.practicum.main.category.mapper.CategoryMapperUtil.fromDtoRequest;
-import static ru.practicum.main.category.mapper.CategoryMapperUtil.toDto;
+import static ru.practicum.main.category.mapper.CategoryMapperUtil.toCategoryDto;
 
 @Service
 @Slf4j
@@ -28,7 +28,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
 
         Category save = categoryRepository.save(fromDtoRequest(request));
         log.info("Added category: {}", save);
-        return toDto(save);
+        return toCategoryDto(save);
     }
 
     @Override
@@ -54,6 +54,6 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
         Category save = categoryRepository.save(fromDtoRequest(request));
         log.info("Updated category with id: {}", catId);
 
-        return toDto(save);
+        return toCategoryDto(save);
     }
 }

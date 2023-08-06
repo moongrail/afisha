@@ -1,4 +1,4 @@
-package ru.practicum.main.util;
+package ru.practicum.main.common.util;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.PageRequest;

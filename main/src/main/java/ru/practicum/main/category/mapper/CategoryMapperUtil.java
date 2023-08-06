@@ -4,12 +4,11 @@ import lombok.experimental.UtilityClass;
 import ru.practicum.main.category.dto.CategoryDto;
 import ru.practicum.main.category.dto.NewCategoryDto;
 import ru.practicum.main.category.model.Category;
-import ru.practicum.main.user.dto.NewUserRequest;
 
 @UtilityClass
 public class CategoryMapperUtil {
 
-    public static CategoryDto toDto(Category category) {
+    public static CategoryDto toCategoryDto(Category category) {
         return CategoryDto.builder()
                 .id(category.getId())
                 .name(category.getName())

@@ -14,8 +14,9 @@ import ru.practicum.main.category.service.CategoryAdminService;
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 
-@RestController("/admin/categories")
+@RestController
 @RequiredArgsConstructor
+@RequestMapping("/admin/categories")
 @Slf4j
 @Validated
 public class CategoryAdminController {

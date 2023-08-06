@@ -5,17 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.compilation.dto.CompilationDto;
 import ru.practicum.main.compilation.dto.NewCompilationDto;
+import ru.practicum.main.compilation.dto.UpdateCompilationRequest;
 import ru.practicum.main.compilation.service.CompilationAdminService;
 
 import javax.validation.Valid;
 
-@RestController("/admin/compilations")
+@RestController
 @Slf4j
+@RequestMapping("/admin/compilations")
 @RequiredArgsConstructor
 public class CompilationAdminController {
     private final CompilationAdminService compilationAdminService;
@@ -32,5 +32,21 @@ public class CompilationAdminController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(compilationAdminService.addCompilation(request));
+    }
+
+    @DeleteMapping("/{compId}")
+    public ResponseEntity<String> deleteCompilation(@PathVariable Long compId) {
+        compilationAdminService.deleteCompilation(compId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+    }
+
+    @PatchMapping("/{compId}")
+    public ResponseEntity<CompilationDto> updateCompilation(@PathVariable Long compId,
+                                                            @RequestBody UpdateCompilationRequest request){
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(compilationAdminService.patchCompilation(compId, request));
     }
 }

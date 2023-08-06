@@ -26,6 +26,7 @@ public class CategoryErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.CONFLICT)
+                .reason(ex.getCause().toString())
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.from(Instant.now()))
                 .build();
@@ -38,6 +39,7 @@ public class CategoryErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.NOT_FOUND)
+                .reason(ex.getCause().toString())
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.from(Instant.now()))
                 .build();

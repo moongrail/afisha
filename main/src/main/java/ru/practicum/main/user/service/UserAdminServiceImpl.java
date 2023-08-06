@@ -8,15 +8,13 @@ import ru.practicum.main.user.dto.NewUserRequest;
 import ru.practicum.main.user.dto.UserShortDto;
 import ru.practicum.main.user.exception.UserNotFoundException;
 import ru.practicum.main.user.exception.UserUniqueParameterEmailException;
-import ru.practicum.main.user.mapper.UserMapperUtil;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repositories.UserRepository;
-import ru.practicum.main.util.PaginationUtil;
 
 import java.util.List;
 
 import static ru.practicum.main.user.mapper.UserMapperUtil.*;
-import static ru.practicum.main.util.PaginationUtil.getPaginationWithoutSort;
+import static ru.practicum.main.common.util.PaginationUtil.getPaginationWithoutSort;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +31,7 @@ public class UserAdminServiceImpl implements UserAdminService {
         User user = userRepository.save(fromDto(request));
         log.info("Added user: {}", user);
 
-        return toDtoUserShort(user);
+        return toUserShortDto(user);
     }
 
     @Override
