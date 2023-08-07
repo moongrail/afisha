@@ -5,13 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.main.event.dto.EventAdminPatch;
+import ru.practicum.main.event.dto.UpdateEventAdminRequest;
 import ru.practicum.main.event.dto.EventFullDto;
-import ru.practicum.main.event.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.main.event.model.EventState;
 import ru.practicum.main.event.service.EventAdminService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -27,7 +25,7 @@ public class EventAdminController {
 
     @PatchMapping("/{eventId}")
     public ResponseEntity<EventFullDto> patchEvent(@PathVariable @Positive Long eventId,
-                                                   @RequestBody EventAdminPatch request) {
+                                                   @RequestBody UpdateEventAdminRequest request) {
 
         return ResponseEntity.ok(eventAdminService.patchEvent(eventId, request));
     }

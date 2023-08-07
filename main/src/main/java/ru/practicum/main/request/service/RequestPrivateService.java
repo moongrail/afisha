@@ -8,4 +8,6 @@ public interface RequestPrivateService {
     List<ParticipationRequestDto> getAllRequestsByIdUser(Long userId);
 
     ParticipationRequestDto createRequest(Long userId, Long eventId);
+
+    ParticipationRequestDto cancelRequest(Long userId, Long requestId);
 }

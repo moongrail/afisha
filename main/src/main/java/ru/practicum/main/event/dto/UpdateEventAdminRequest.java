@@ -3,6 +3,7 @@ package ru.practicum.main.event.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.main.event.model.Location;
+import ru.practicum.main.event.model.StateActionAdmin;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventAdminPatch {
+public class UpdateEventAdminRequest {
     private String annotation;
     private Long category;
     private String description;
@@ -21,6 +22,6 @@ public class EventAdminPatch {
     private Boolean paid;
     private Integer participantLimit;
     private Boolean requestModeration;
-    private StateAction stateAction;
+    private StateActionAdmin stateAction;
     private String title;
 }

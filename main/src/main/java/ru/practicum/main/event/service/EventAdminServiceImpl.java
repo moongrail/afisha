@@ -10,13 +10,12 @@ import org.springframework.stereotype.Service;
 import ru.practicum.main.category.exception.CategoryNotFoundException;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repositories.CategoryRepository;
-import ru.practicum.main.event.dto.EventAdminPatch;
+import ru.practicum.main.event.dto.UpdateEventAdminRequest;
 import ru.practicum.main.event.dto.EventFullDto;
-import ru.practicum.main.event.dto.StateAction;
+import ru.practicum.main.event.model.StateActionAdmin;
 import ru.practicum.main.event.exception.EventDateConflictException;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.exception.EventStateConflictException;
-import ru.practicum.main.event.mapper.EventMapperUtil;
 import ru.practicum.main.event.model.Event;
 import ru.practicum.main.event.model.EventState;
 import ru.practicum.main.event.repositories.EventRepository;
@@ -25,7 +24,6 @@ import ru.practicum.main.event.repositories.EventSpecifications;
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDto;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDtoList;
@@ -39,7 +37,7 @@ public class EventAdminServiceImpl implements EventAdminService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public EventFullDto patchEvent(Long eventId, EventAdminPatch requestToPatch) {
+    public EventFullDto patchEvent(Long eventId, UpdateEventAdminRequest requestToPatch) {
         log.info("patchEvent: eventId = {}, requestToPatch = {}", eventId, requestToPatch);
 
         Event event = eventRepository.findById(eventId)
@@ -111,14 +109,14 @@ public class EventAdminServiceImpl implements EventAdminService {
         return toEventFullDtoList(eventPage);
     }
 
-    private static void checkStateAction(EventAdminPatch requestToPatch, Event event) {
-        if (requestToPatch.getStateAction() == StateAction.PUBLISH_EVENT
+    private static void checkStateAction(UpdateEventAdminRequest requestToPatch, Event event) {
+        if (requestToPatch.getStateAction() == StateActionAdmin.PUBLISH_EVENT
                 && event.getState() != EventState.PENDING) {
             log.error("Event is not pending");
             throw new EventStateConflictException("Event is not pending");
         }
 
-        if (requestToPatch.getStateAction() == StateAction.REJECT_EVENT
+        if (requestToPatch.getStateAction() == StateActionAdmin.REJECT_EVENT
                 && event.getState() == EventState.PUBLISHED) {
             log.error("Event published");
             throw new EventStateConflictException("Event published");

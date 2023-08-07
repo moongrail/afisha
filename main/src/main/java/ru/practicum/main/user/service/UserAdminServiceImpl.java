@@ -14,7 +14,7 @@ import ru.practicum.main.user.repositories.UserRepository;
 import java.util.List;
 
 import static ru.practicum.main.user.mapper.UserMapperUtil.*;
-import static ru.practicum.main.common.util.PaginationUtil.getPaginationWithoutSort;
+import static ru.practicum.main.common.util.PaginationUtil.getPaginationAsc;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +36,7 @@ public class UserAdminServiceImpl implements UserAdminService {
 
     @Override
     public List<User> getAllUsers(Integer[] ids, Integer from, Integer size) {
-        Pageable pageable = getPaginationWithoutSort(from, size);
+        Pageable pageable = getPaginationAsc(from, size);
 
         return userRepository.searchUsersByIds(ids, pageable);
     }

@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.main.common.ApiError;
 import ru.practicum.main.event.controller.EventAdminController;
-import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.exception.EventDateConflictException;
 import ru.practicum.main.event.exception.EventNotFoundException;
+import ru.practicum.main.event.exception.EventConflictException;
 import ru.practicum.main.event.exception.EventStateConflictException;
 
 import java.time.Instant;
@@ -50,6 +50,19 @@ public class EventErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
     public ApiError handleEventDateConflictException(EventDateConflictException ex) {
+        return ApiError.builder()
+                .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
+                .status(HttpStatus.CONFLICT)
+                .reason(ex.getCause().toString())
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.from(Instant.now()))
+                .build();
+    }
+
+    @ExceptionHandler(EventConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ApiError handleEventOwnerConflictException(EventConflictException ex) {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.CONFLICT)

@@ -30,5 +30,12 @@ public class RequestPrivateController {
                                                                  @RequestParam @Positive Long eventId) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(requestPrivateService.createRequest(userId, eventId));
-                                                                 }
+
+    }
+
+    @PatchMapping("/{requestId}/cancel")
+    public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable @Positive Long userId,
+                                                                 @PathVariable @Positive Long requestId){
+        return ResponseEntity.ok(requestPrivateService.cancelRequest(userId, requestId));
+    }
 }

@@ -22,7 +22,7 @@ public class PaginationUtil {
 //        return PageRequest.of(from / size, size, sortCreated);
 //    }
 
-    public static Pageable getPaginationWithoutSort(Integer from, Integer size) {
+    public static Pageable getPaginationAsc(Integer from, Integer size) {
         if (from == null || size == null) {
             return PageRequest.of(0, Integer.MAX_VALUE);
         }
@@ -31,6 +31,6 @@ public class PaginationUtil {
             throw new PaginationParameterException("Неверные параметры пагинации.");
         }
 
-        return PageRequest.of(from / size, size);
+        return PageRequest.of(from / size, size, Sort.Direction.ASC);
     }
 }

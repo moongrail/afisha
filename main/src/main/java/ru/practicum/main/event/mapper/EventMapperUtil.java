@@ -3,11 +3,15 @@ package ru.practicum.main.event.mapper;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
 import ru.practicum.main.category.mapper.CategoryMapperUtil;
+import ru.practicum.main.category.model.Category;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
+import ru.practicum.main.event.dto.NewEventDto;
 import ru.practicum.main.event.model.Event;
 import ru.practicum.main.user.mapper.UserMapperUtil;
+import ru.practicum.main.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,6 +58,25 @@ public class EventMapperUtil {
                 .paid(event.getPaid())
                 .title(event.getTitle())
                 .views(event.getViews())
+                .build();
+    }
+
+    public static List<EventShortDto> toEventShortDtoList(List<Event> events){
+        return events.stream()
+                .map(EventMapperUtil::toEventShortDto)
+                .collect(Collectors.toList());
+    }
+
+    public static Event toEventFromNewEventDto(NewEventDto newEventDto) {
+        return Event.builder()
+                .annotation(newEventDto.getAnnotation())
+                .description(newEventDto.getDescription())
+                .participantLimit(newEventDto.getParticipantLimit())
+                .requestModeration(newEventDto.getRequestModeration())
+                .paid(newEventDto.getPaid())
+                .eventDate(newEventDto.getEventDate())
+                .location(newEventDto.getLocation())
+                .title(newEventDto.getTitle())
                 .build();
     }
 }
