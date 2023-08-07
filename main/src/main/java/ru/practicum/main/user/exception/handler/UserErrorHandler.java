@@ -9,6 +9,7 @@ import ru.practicum.main.common.ApiError;
 import ru.practicum.main.user.controller.UserAdminController;
 import ru.practicum.main.user.exception.PaginationParameterException;
 import ru.practicum.main.user.exception.UserNotFoundException;
+import ru.practicum.main.user.exception.UserParameterException;
 import ru.practicum.main.user.exception.UserUniqueParameterEmailException;
 
 import java.time.Instant;
@@ -51,6 +52,19 @@ public class UserErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.CONFLICT)
+                .reason(ex.getCause().toString())
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.from(Instant.now()))
+                .build();
+    }
+
+    @ExceptionHandler(UserParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ApiError handleUserParameterException(UserParameterException ex) {
+        return ApiError.builder()
+                .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
+                .status(HttpStatus.BAD_REQUEST)
                 .reason(ex.getCause().toString())
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.from(Instant.now()))

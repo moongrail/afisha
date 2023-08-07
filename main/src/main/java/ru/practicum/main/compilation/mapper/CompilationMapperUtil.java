@@ -32,4 +32,10 @@ public class CompilationMapperUtil {
                 .events(eventShortDtoList)
                 .build();
     }
+
+    public static List<CompilationDto> toCompilationDtoList(List<Compilation> compilations){
+        return compilations.stream()
+                .map(CompilationMapperUtil::toCompilationDto)
+                .collect(Collectors.toList());
+    }
 }

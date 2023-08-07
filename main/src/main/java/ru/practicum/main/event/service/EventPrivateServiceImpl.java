@@ -23,6 +23,7 @@ import ru.practicum.main.request.model.Request;
 import ru.practicum.main.request.model.RequestStatus;
 import ru.practicum.main.request.repositories.RequestRepository;
 import ru.practicum.main.user.exception.UserNotFoundException;
+import ru.practicum.main.user.exception.UserParameterException;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repositories.UserRepository;
 
@@ -116,6 +117,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public List<ParticipationRequestDto> findAllByUserIdAndEventIdRequests(Long userId, Long eventId) {
+
         checkUserExist(userId);
         checkEventExist(eventId);
 

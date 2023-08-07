@@ -14,6 +14,7 @@ import ru.practicum.main.request.mapper.RequestMapperUtil;
 import ru.practicum.main.request.model.Request;
 import ru.practicum.main.request.repositories.RequestRepository;
 import ru.practicum.main.user.exception.UserNotFoundException;
+import ru.practicum.main.user.exception.UserParameterException;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repositories.UserRepository;
 
@@ -52,6 +53,9 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
 
     @Override
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
+        if (!userRepository.existsById(userId)){
+            throw new UserParameterException("User not found by id = " + userId);
+        }
 
         User requester = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found"));
         Event event = eventRepository

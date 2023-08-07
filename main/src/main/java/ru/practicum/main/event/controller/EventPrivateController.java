@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.event.dto.*;
@@ -36,7 +37,13 @@ public class EventPrivateController {
 
     @PostMapping
     public ResponseEntity<EventFullDto> createEvent(@PathVariable @Positive Long userId,
-                                                    @RequestBody @Valid NewEventDto newEventDto) {
+                                                    @RequestBody @Valid NewEventDto newEventDto,
+                                                    BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            log.error("Bad parameters to create event: {}", newEventDto);
+            ResponseEntity.badRequest()
+                    .body(newEventDto);
+        }
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(eventPrivateService.createEvent(userId, newEventDto));

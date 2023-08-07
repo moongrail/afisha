@@ -13,7 +13,6 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class NewUserRequest {
     @NotEmpty
-    @NotBlank
     private String name;
     @Email
     private String email;

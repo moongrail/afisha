@@ -26,4 +26,19 @@ public class EventSpecifications {
     public static Specification<Event> eventDateBeforeOrEqual(LocalDateTime rangeEnd) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("eventDate"), rangeEnd);
     }
+
+    public static Specification<Event> textContainsIgnoreCase(String text) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.or(
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("annotation")), "%" + text.toLowerCase() + "%"),
+                criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), "%" + text.toLowerCase() + "%")
+        );
+    }
+
+    public static Specification<Event> isPaid(Boolean paid) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("paid"), paid);
+    }
+
+    public static Specification<Event> hasAvailableRequests() {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("confirmedRequests"), 0L);
+    }
 }
