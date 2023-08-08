@@ -10,6 +10,7 @@ import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.dto.EventTypeSort;
 import ru.practicum.main.event.service.EventPublicService;
 import ru.practicum.stat_client.EndpointHitClient;
+import ru.practicum.stat_client.ViewStatisticClient;
 import ru.practicum.stat_dto.EndpointHitDto;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,6 +27,7 @@ import java.util.List;
 public class EventPublicController {
     private final EventPublicService eventPublicService;
     private final EndpointHitClient endpointHitClient;
+    private final ViewStatisticClient viewStatisticClient;
 
     @GetMapping
     public ResponseEntity<List<EventShortDto>> findAllEvents(@RequestParam(required = false) String text,
@@ -52,9 +54,12 @@ public class EventPublicController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EventFullDto> findEventById(@PathVariable @Positive Long id, HttpServletRequest request) {
-        sendStatisticHit(request);
+        Boolean existIp = (Boolean) viewStatisticClient
+                .getIsUniqueIp(request.getRemoteAddr(),request.getRequestURI()).getBody();
 
-        return ResponseEntity.ok(eventPublicService.findEventById(id));
+        log.info("IP: {}", existIp);
+        sendStatisticHit(request);
+        return ResponseEntity.ok(eventPublicService.findEventById(id, existIp));
     }
 
 

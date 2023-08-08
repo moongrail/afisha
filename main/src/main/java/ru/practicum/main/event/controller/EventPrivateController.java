@@ -37,13 +37,7 @@ public class EventPrivateController {
 
     @PostMapping
     public ResponseEntity<EventFullDto> createEvent(@PathVariable @Positive Long userId,
-                                                    @RequestBody @Valid NewEventDto newEventDto,
-                                                    BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            log.error("Bad parameters to create event: {}", newEventDto);
-            ResponseEntity.badRequest()
-                    .body(newEventDto);
-        }
+                                                    @RequestBody @Valid NewEventDto newEventDto) {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(eventPrivateService.createEvent(userId, newEventDto));
@@ -59,7 +53,7 @@ public class EventPrivateController {
     @PatchMapping("/{eventId}")
     public ResponseEntity<EventFullDto> updateEvent(@PathVariable @Positive Long userId,
                                                     @PathVariable @Positive Long eventId,
-                                                    @RequestBody UpdateEventUserRequest updateEventUserRequest) {
+                                                    @RequestBody @Valid UpdateEventUserRequest updateEventUserRequest) {
 
         return ResponseEntity
                 .ok(eventPrivateService.updateEvent(userId, eventId, updateEventUserRequest));

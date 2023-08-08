@@ -10,12 +10,15 @@ import ru.practicum.main.category.exception.CategoryUniqueNameException;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repositories.CategoryRepository;
 
+import javax.transaction.Transactional;
+
 import static ru.practicum.main.category.mapper.CategoryMapperUtil.fromDtoRequest;
 import static ru.practicum.main.category.mapper.CategoryMapperUtil.toCategoryDto;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class CategoryAdminServiceImpl implements CategoryAdminService {
     private final CategoryRepository categoryRepository;
 
@@ -46,12 +49,16 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
         if (!categoryRepository.existsById(catId)) {
             log.error("Category with this id does not exist {}", catId);
             throw new CategoryNotFoundException("Category with this id does not exist");
-        }else if (!categoryRepository.existsByName(request.getName()) &&
-                !categoryRepository.existsById(catId)) {
-            log.error("Category with this name does not exist {}", request.getName());
-            throw new CategoryUniqueNameException("Category with this name does not exist");
         }
-        Category save = categoryRepository.save(fromDtoRequest(request));
+//        if (categoryRepository.existsByName(request.getName())) {
+//            log.error("Category with this name does already exist {}", request.getName());
+//            throw new CategoryUniqueNameException("Category with this name does already exist" + request.getName());
+//        }
+
+        Category category = fromDtoRequest(request);
+        category.setId(catId);
+
+        Category save = categoryRepository.save(category);
         log.info("Updated category with id: {}", catId);
 
         return toCategoryDto(save);

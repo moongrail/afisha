@@ -35,4 +35,8 @@ public class ViewStatisticClient extends BaseClient {
 
         return super.get("?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
+
+    public ResponseEntity<Object> getIsUniqueIp(String ip, String uri) {
+        return super.get("/{ip}?uri={uri}", Map.of("ip", ip, "uri", uri));
+    }
 }

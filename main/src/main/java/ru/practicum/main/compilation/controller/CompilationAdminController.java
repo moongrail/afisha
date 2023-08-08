@@ -24,13 +24,7 @@ public class CompilationAdminController {
     private final CompilationAdminService compilationAdminService;
 
     @PostMapping
-    public ResponseEntity<CompilationDto> addCompilation(@RequestBody @Valid NewCompilationDto request,
-                                                         BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            log.error("Bad parameters to add compilation: {}", request);
-            ResponseEntity.badRequest()
-                    .body(request);
-        }
+    public ResponseEntity<CompilationDto> addCompilation(@RequestBody @Valid NewCompilationDto request) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -47,7 +41,7 @@ public class CompilationAdminController {
 
     @PatchMapping("/{compId}")
     public ResponseEntity<CompilationDto> updateCompilation(@PathVariable @Positive Long compId,
-                                                            @RequestBody UpdateCompilationRequest request){
+                                                            @RequestBody @Valid UpdateCompilationRequest request){
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(compilationAdminService.patchCompilation(compId, request));

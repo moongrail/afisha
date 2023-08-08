@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = "ru.practicum.stat_client")
+@ComponentScan(basePackages = {"ru.practicum.stat_client", "ru.practicum.main"})
 public class MainApplication {
 
     public static void main(String[] args) {

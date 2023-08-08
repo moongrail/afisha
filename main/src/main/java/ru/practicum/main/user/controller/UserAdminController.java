@@ -8,6 +8,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.user.dto.NewUserRequest;
+import ru.practicum.main.user.dto.UserDto;
 import ru.practicum.main.user.dto.UserShortDto;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.service.UserAdminService;
@@ -26,13 +27,7 @@ public class UserAdminController {
     private final UserAdminService userAdminService;
 
     @PostMapping
-    public ResponseEntity<UserShortDto> addUser(@RequestBody @Valid NewUserRequest request,
-                                                BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            log.error("Bad parameters to add user: {}", request);
-            ResponseEntity.badRequest()
-                    .body(request);
-        }
+    public ResponseEntity<UserShortDto> addUser(@RequestBody @Valid NewUserRequest request) {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -40,9 +35,9 @@ public class UserAdminController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers(@RequestParam() Integer[] ids,
-                                                  @RequestParam( defaultValue = "0") @PositiveOrZero Integer from,
-                                                  @RequestParam( defaultValue = "10") @Positive Integer size) {
+    public ResponseEntity<List<UserDto>> getAllUsers(@RequestParam(required = false) Integer[] ids,
+                                                     @RequestParam( defaultValue = "0") @PositiveOrZero Integer from,
+                                                     @RequestParam( defaultValue = "10") @Positive Integer size) {
         log.info("Get all users: {}", ids);
         return ResponseEntity.ok(userAdminService.getAllUsers(ids, from, size));
     }

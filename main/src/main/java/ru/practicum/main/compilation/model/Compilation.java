@@ -25,7 +25,7 @@ public class Compilation {
     @Column(nullable = false)
     private String title;
     @ManyToMany
-    @JoinTable(name = "compilation_events",
+    @JoinTable(name = "compilation_event",
             joinColumns = @JoinColumn(name = "compilation_id"),
             inverseJoinColumns = @JoinColumn(name = "event_id"))
     private List<Event> events;

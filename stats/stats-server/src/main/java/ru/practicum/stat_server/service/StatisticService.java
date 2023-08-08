@@ -10,4 +10,6 @@ public interface StatisticService {
     EndpointHitDto addHit(EndpointHitDto endpointHitDto);
 
     List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique);
+
+    Boolean isUniqueIp(String ip, String uri);
 }

@@ -2,15 +2,16 @@ package ru.practicum.main.event.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.main.category.exception.CategoryNotFoundException;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repositories.CategoryRepository;
-import ru.practicum.main.common.util.PaginationUtil;
 import ru.practicum.main.event.dto.*;
 import ru.practicum.main.event.exception.EventConflictException;
-import ru.practicum.main.event.exception.EventDateConflictException;
+import ru.practicum.main.event.exception.EventDatePatameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.exception.EventStateConflictException;
 import ru.practicum.main.event.model.Event;
@@ -23,7 +24,6 @@ import ru.practicum.main.request.model.Request;
 import ru.practicum.main.request.model.RequestStatus;
 import ru.practicum.main.request.repositories.RequestRepository;
 import ru.practicum.main.user.exception.UserNotFoundException;
-import ru.practicum.main.user.exception.UserParameterException;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repositories.UserRepository;
 
@@ -51,7 +51,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     public List<EventShortDto> findAllByUserId(Long userId, Integer from, Integer size) {
         checkUserExist(userId);
 
-        Pageable pageable = PaginationUtil.getPaginationAsc(from, size);
+        Pageable pageable = PageRequest.of(from, size, Sort.Direction.ASC, "id");
 
         List<Event> eventsByInitiatorId = eventRepository.findEventsByInitiatorId(userId, pageable);
 
@@ -219,11 +219,12 @@ public class EventPrivateServiceImpl implements EventPrivateService {
             oldEvent.setCategory(categoryRepository.findById(updateEventUserRequest.getCategory()).orElseThrow(() ->
                     new CategoryNotFoundException("Category not found by id = " + updateEventUserRequest.getCategory())));
         }
-
-        if (updateEventUserRequest.getStateAction().equals(StateActionPrivate.SEND_TO_REVIEW)) {
-            oldEvent.setState(EventState.PENDING);
-        } else if (updateEventUserRequest.getStateAction().equals(StateActionPrivate.CANCEL_REVIEW)) {
-            oldEvent.setState(EventState.CANCELED);
+        if (updateEventUserRequest.getStateAction() != null) {
+            if (updateEventUserRequest.getStateAction().equals(StateActionPrivate.SEND_TO_REVIEW)) {
+                oldEvent.setState(EventState.PENDING);
+            } else if (updateEventUserRequest.getStateAction().equals(StateActionPrivate.CANCEL_REVIEW)) {
+                oldEvent.setState(EventState.CANCELED);
+            }
         }
 
         return oldEvent;
@@ -247,6 +248,10 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         eventFromNewEventDto.setInitiator(user);
         eventFromNewEventDto.setCategory(category);
+        eventFromNewEventDto.setCreatedOn(LocalDateTime.now());
+        eventFromNewEventDto.setState(EventState.PENDING);
+        eventFromNewEventDto.setViews(0L);
+        eventFromNewEventDto.setConfirmedRequests(0L);
 
         if (eventFromNewEventDto.getParticipantLimit() == null) {
             eventFromNewEventDto.setParticipantLimit(0);
@@ -272,7 +277,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     private void checkEventDate(LocalDateTime eventDate) {
         if (eventDate.isBefore(now().plusHours(2))) {
-            throw new EventDateConflictException("Event date conflict");
+            throw new EventDatePatameterException("Event date conflict");
         }
     }
 }

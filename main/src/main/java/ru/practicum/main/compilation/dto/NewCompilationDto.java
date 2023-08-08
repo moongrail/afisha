@@ -3,10 +3,7 @@ package ru.practicum.main.compilation.dto;
 import lombok.*;
 import org.hibernate.validator.constraints.UniqueElements;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Getter
@@ -16,9 +13,10 @@ import java.util.List;
 @Builder
 public class NewCompilationDto {
     @NotEmpty
-    @Size(min = 1, max = 100)
+    @NotBlank
+    @Size(min = 1, max = 50)
     private String title;
-    private boolean pinned;
+    private Boolean pinned;
     @UniqueElements
     private List<Long> events;
 

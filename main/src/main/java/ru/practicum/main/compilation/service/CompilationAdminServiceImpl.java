@@ -36,12 +36,12 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
         }
 
         List<Event> events = new ArrayList<>();
-        if (!request.getEvents().isEmpty()) {
+        if (request.getEvents() != null && request.getEvents().size() != 0) {
             events = eventRepository.findAllById(request.getEvents());
         }
 
         Compilation compilation = Compilation.builder()
-                .pinned(request.isPinned())
+                .pinned(request.getPinned() != null && request.getPinned())
                 .title(request.getTitle())
                 .events(events)
                 .build();

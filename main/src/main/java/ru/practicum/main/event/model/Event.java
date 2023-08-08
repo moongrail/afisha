@@ -40,6 +40,7 @@ public class Event {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     private Boolean requestModeration;
+    @Enumerated(EnumType.STRING)
     private EventState state;
     private String title;
     private Long views;

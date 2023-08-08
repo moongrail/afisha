@@ -13,7 +13,7 @@ import ru.practicum.main.category.repositories.CategoryRepository;
 import ru.practicum.main.event.dto.UpdateEventAdminRequest;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.model.StateActionAdmin;
-import ru.practicum.main.event.exception.EventDateConflictException;
+import ru.practicum.main.event.exception.EventDatePatameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.exception.EventStateConflictException;
 import ru.practicum.main.event.model.Event;
@@ -25,8 +25,10 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.time.LocalDateTime.now;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDto;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDtoList;
+import static ru.practicum.main.event.model.EventState.*;
 
 @Service
 @Slf4j
@@ -45,7 +47,10 @@ public class EventAdminServiceImpl implements EventAdminService {
 
 
         checkStateAction(requestToPatch, event);
+
+        if (requestToPatch.getEventDate() != null){
         checkEventDate(requestToPatch.getEventDate());
+        }
 
         if (requestToPatch.getAnnotation() != null) {
             event.setAnnotation(requestToPatch.getAnnotation());
@@ -73,6 +78,14 @@ public class EventAdminServiceImpl implements EventAdminService {
         }
         if (requestToPatch.getRequestModeration() != null) {
             event.setRequestModeration(requestToPatch.getRequestModeration());
+        }
+        if (requestToPatch.getStateAction() != null) {
+            if (requestToPatch.getStateAction().equals(StateActionAdmin.PUBLISH_EVENT)) {
+                event.setState(PUBLISHED);
+                event.setPublishedOn(now());
+            }else {
+                event.setState(CANCELED);
+            }
         }
 
         Event updatedEvent = eventRepository.save(event);
@@ -111,22 +124,22 @@ public class EventAdminServiceImpl implements EventAdminService {
 
     private static void checkStateAction(UpdateEventAdminRequest requestToPatch, Event event) {
         if (requestToPatch.getStateAction() == StateActionAdmin.PUBLISH_EVENT
-                && event.getState() != EventState.PENDING) {
+                && event.getState() != PENDING) {
             log.error("Event is not pending");
             throw new EventStateConflictException("Event is not pending");
         }
 
         if (requestToPatch.getStateAction() == StateActionAdmin.REJECT_EVENT
-                && event.getState() == EventState.PUBLISHED) {
+                && event.getState() == PUBLISHED) {
             log.error("Event published");
             throw new EventStateConflictException("Event published");
         }
     }
 
     private void checkEventDate(LocalDateTime eventDate) {
-        LocalDateTime checkDate = LocalDateTime.now().plusHours(2);
+        LocalDateTime checkDate = now().plusHours(2);
         if (eventDate.isBefore(checkDate)) {
-            throw new EventDateConflictException("Event date conflict");
+            throw new EventDatePatameterException("Event date error");
         }
     }
 }

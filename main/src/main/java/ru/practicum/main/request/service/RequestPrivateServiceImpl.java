@@ -66,7 +66,7 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
             throw new RequestConflictException("Request already exists");
         }
 
-        if (!event.getInitiator().getId().equals(requester.getId())) {
+        if (eventRepository.existsByInitiatorIdAndId(userId, eventId)) {
             log.warn("Not owner event for user {} and event {}", userId, eventId);
             throw new EventConflictException("Not owner event");
         }

@@ -41,4 +41,11 @@ public class StatisticServiceImpl implements StatisticService {
             return statisticRepository.getAllStats(start, end, uris);
         }
     }
+
+    @Override
+    public Boolean isUniqueIp(String ip, String uri) {
+        Boolean aBoolean = statisticRepository.existsByIpAndUri(ip, uri);
+        log.info("isUniqueIp: {}", aBoolean);
+        return aBoolean;
+    }
 }

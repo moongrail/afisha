@@ -14,6 +14,7 @@ import ru.practicum.main.event.dto.EventTypeSort;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.mapper.EventMapperUtil;
 import ru.practicum.main.event.model.Event;
+import ru.practicum.main.event.model.EventState;
 import ru.practicum.main.event.repositories.EventRepository;
 import ru.practicum.main.event.repositories.EventSpecifications;
 
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDto;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventShortDtoList;
+import static ru.practicum.main.event.model.EventState.*;
 
 @Service
 @Slf4j
@@ -70,10 +72,18 @@ public class EventPublicServiceImpl implements EventPublicService {
     }
 
     @Override
-    public EventFullDto findEventById(Long id) {
-        Event event = eventRepository.findById(id).orElseThrow(() -> new EventNotFoundException("Event not found"));
+    public EventFullDto findEventById(Long id, Boolean existIp) {
+        Event event = eventRepository.findByIdAndState(id, PUBLISHED).orElseThrow(() ->
+                new EventNotFoundException("Event not found"));
 
-        log.info("findEventById: {}", event);
-        return toEventFullDto(event);
+        Event save = event;
+
+        if (!existIp) {
+            event.setViews(event.getViews() + 1);
+            save = eventRepository.save(event);
+        }
+
+        log.info("EventPublicServiceImpl findEventById: {}", save);
+        return toEventFullDto(save);
     }
 }

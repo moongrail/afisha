@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.main.category.dto.CategoryDto;
 import ru.practicum.main.category.exception.CategoryNotFoundException;
@@ -26,7 +27,7 @@ public class CategoryPublicServiceImpl implements CategoryPublicService {
 
     @Override
     public List<CategoryDto> findAllCategories(Integer from, Integer size) {
-        Pageable pageable = getPaginationAsc(from, size);
+        Pageable pageable = PageRequest.of(from, size, Sort.Direction.ASC, "id");
 
         List<Category> categories = categoryRepository.findAll(pageable).getContent();
 

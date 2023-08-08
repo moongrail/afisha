@@ -11,6 +11,8 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.main.event.model.Event;
 
 import org.springframework.data.domain.Pageable;
+import ru.practicum.main.event.model.EventState;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -30,4 +32,5 @@ public interface EventRepository extends JpaRepository<Event,Long> {
 
     boolean existsEventByTitle(String title);
 
+    Optional<Event> findByIdAndState(Long id, EventState state);
 }

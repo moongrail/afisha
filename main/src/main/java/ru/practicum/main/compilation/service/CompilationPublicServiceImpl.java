@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.main.common.util.PaginationUtil;
 import ru.practicum.main.compilation.dto.CompilationDto;
@@ -26,7 +27,8 @@ public class CompilationPublicServiceImpl implements CompilationPublicService {
 
     @Override
     public List<CompilationDto> findAllCompilations(Boolean pinned, Integer from, Integer size) {
-        Pageable pageable = getPaginationAsc(from, size);
+        Pageable pageable = PageRequest.of(from,size, Sort.Direction.ASC, "id");
+
         List<Compilation> compilations;
 
         if (pinned == null) {

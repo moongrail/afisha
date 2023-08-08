@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UpdateCompilationRequest {
+    @Size(min = 1, max = 50)
     private String title;
     private Boolean pinned;
     @UniqueElements

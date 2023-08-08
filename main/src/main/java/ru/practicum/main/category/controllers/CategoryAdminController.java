@@ -23,13 +23,8 @@ public class CategoryAdminController {
     private final CategoryAdminService categoryAdminService;
 
     @PostMapping
-    public ResponseEntity<CategoryDto> addCategory(@RequestBody @Valid NewCategoryDto request,
-                                                   BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            log.error("Bad parameters to add category: {}", request);
-            ResponseEntity.badRequest()
-                    .body(request);
-        }
+    public ResponseEntity<CategoryDto> addCategory(@RequestBody @Valid NewCategoryDto request) {
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(categoryAdminService.addCategory(request));
@@ -39,16 +34,15 @@ public class CategoryAdminController {
     public ResponseEntity<String> deleteCategory(@PathVariable @Positive Long catId) {
         categoryAdminService.deleteCategory(catId);
         return ResponseEntity
-                .status(HttpStatus.OK)
+                .status(HttpStatus.NO_CONTENT)
                 .body("Category deleted: " + catId);
     }
 
     @PatchMapping("/{catId}")
-    public ResponseEntity<String> updateCategory(@PathVariable @Positive Long catId,
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable @Positive Long catId,
                                                  @RequestBody @Valid NewCategoryDto request){
-        categoryAdminService.patchCategory(catId, request);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body("Category updated: " + catId);
+                .body(categoryAdminService.patchCategory(catId, request));
     }
 }

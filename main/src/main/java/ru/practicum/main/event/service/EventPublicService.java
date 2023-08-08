@@ -12,5 +12,5 @@ public interface EventPublicService {
                                       LocalDateTime rangeEnd, Boolean onlyAvailable, EventTypeSort sort,
                                       Integer from, Integer size);
 
-    EventFullDto findEventById(Long id);
+    EventFullDto findEventById(Long id, Boolean existIp);
 }

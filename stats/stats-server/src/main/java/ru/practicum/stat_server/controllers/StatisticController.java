@@ -49,4 +49,10 @@ public class StatisticController {
         return ResponseEntity.ok(statisticService.getStats(start, end, uris, unique));
     }
 
+    @GetMapping("/stats/{ip}")
+    public ResponseEntity<Boolean> getIsUniqueIp(@PathVariable String ip,
+                                                 @RequestParam String uri) {
+        log.info("Check ip: {} and uri: {}", ip, uri);
+        return ResponseEntity.ok(statisticService.isUniqueIp(ip, uri));
+    }
 }

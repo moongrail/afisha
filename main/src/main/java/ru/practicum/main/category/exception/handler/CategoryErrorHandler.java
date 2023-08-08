@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@RestControllerAdvice(basePackageClasses = CategoryAdminController.class)
+import static java.time.LocalDateTime.now;
+
+@RestControllerAdvice(basePackages = "ru.practicum.main")
 public class CategoryErrorHandler {
 
     @ExceptionHandler(CategoryUniqueNameException.class)
@@ -26,9 +28,9 @@ public class CategoryErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.CONFLICT)
-                .reason(ex.getCause().toString())
+                .reason(ex.getCause() != null ? ex.getCause().toString() : ex.getMessage())
                 .message(ex.getMessage())
-                .timestamp(LocalDateTime.from(Instant.now()))
+                .timestamp(now())
                 .build();
     }
 
@@ -39,9 +41,9 @@ public class CategoryErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.NOT_FOUND)
-                .reason(ex.getCause().toString())
+                .reason(ex.getCause() != null ? ex.getCause().toString() : ex.getMessage())
                 .message(ex.getMessage())
-                .timestamp(LocalDateTime.from(Instant.now()))
+                .timestamp(now())
                 .build();
     }
 }

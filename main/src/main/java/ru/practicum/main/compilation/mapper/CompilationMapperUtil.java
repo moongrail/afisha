@@ -16,7 +16,7 @@ public class CompilationMapperUtil {
     public static Compilation fromDto(NewCompilationDto newCompilationDto){
         return Compilation.builder()
                 .title(newCompilationDto.getTitle())
-                .pinned(newCompilationDto.isPinned())
+                .pinned(newCompilationDto.getPinned())
                 .build();
     }
 
