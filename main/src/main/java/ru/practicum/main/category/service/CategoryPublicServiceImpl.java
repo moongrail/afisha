@@ -8,16 +8,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.main.category.dto.CategoryDto;
 import ru.practicum.main.category.exception.CategoryNotFoundException;
-import ru.practicum.main.category.mapper.CategoryMapperUtil;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repositories.CategoryRepository;
-import ru.practicum.main.common.util.PaginationUtil;
 
 import java.util.List;
 
 import static ru.practicum.main.category.mapper.CategoryMapperUtil.toCategoryDto;
 import static ru.practicum.main.category.mapper.CategoryMapperUtil.toCategoryDtoList;
-import static ru.practicum.main.common.util.PaginationUtil.getPaginationAsc;
 
 @Service
 @Slf4j

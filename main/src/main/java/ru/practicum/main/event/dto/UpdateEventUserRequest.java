@@ -2,7 +2,6 @@ package ru.practicum.main.event.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.main.event.model.EventState;
 import ru.practicum.main.event.model.Location;
 import ru.practicum.main.event.model.StateActionPrivate;
 

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.category.dto.CategoryDto;
@@ -40,7 +39,7 @@ public class CategoryAdminController {
 
     @PatchMapping("/{catId}")
     public ResponseEntity<CategoryDto> updateCategory(@PathVariable @Positive Long catId,
-                                                 @RequestBody @Valid NewCategoryDto request){
+                                                      @RequestBody @Valid NewCategoryDto request) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(categoryAdminService.patchCategory(catId, request));

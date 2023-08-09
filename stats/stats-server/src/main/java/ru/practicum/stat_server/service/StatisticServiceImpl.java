@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.stat_dto.EndpointHitDto;
 import ru.practicum.stat_dto.ViewStatsDto;
+import ru.practicum.stat_server.exceptions.StatDateParameterException;
 import ru.practicum.stat_server.model.Statistic;
 import ru.practicum.stat_server.repositories.StatisticRepository;
 
@@ -29,6 +30,12 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
+        if (start != null && end != null){
+            if (start.isAfter(end)) {
+                throw new StatDateParameterException("Начальная дата должна быть раньше конечной");
+            }
+        }
+
         if (unique) {
             if (uris == null) {
                 return statisticRepository.getStatsByUniqueWithoutUri(start, end);

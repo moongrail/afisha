@@ -6,8 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.main.event.dto.UpdateEventAdminRequest;
 import ru.practicum.main.event.dto.EventFullDto;
+import ru.practicum.main.event.dto.UpdateEventAdminRequest;
 import ru.practicum.main.event.model.EventState;
 import ru.practicum.main.event.service.EventAdminService;
 

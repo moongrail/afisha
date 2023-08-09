@@ -2,6 +2,7 @@ package ru.practicum.main.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,8 +34,12 @@ public class EventPublicController {
     public ResponseEntity<List<EventShortDto>> findAllEvents(@RequestParam(required = false) String text,
                                                              @RequestParam(required = false) Long[] categories,
                                                              @RequestParam(required = false) Boolean paid,
-                                                             @RequestParam(required = false) LocalDateTime rangeStart,
-                                                             @RequestParam(required = false) LocalDateTime rangeEnd,
+                                                             @RequestParam(required = false)
+                                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                             LocalDateTime rangeStart,
+                                                             @RequestParam(required = false)
+                                                             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+                                                             LocalDateTime rangeEnd,
                                                              @RequestParam(required = false, defaultValue = "false")
                                                              Boolean onlyAvailable,
                                                              @RequestParam(required = false, defaultValue = "EVENT_DATE")
@@ -55,7 +60,7 @@ public class EventPublicController {
     @GetMapping("/{id}")
     public ResponseEntity<EventFullDto> findEventById(@PathVariable @Positive Long id, HttpServletRequest request) {
         Boolean existIp = (Boolean) viewStatisticClient
-                .getIsUniqueIp(request.getRemoteAddr(),request.getRequestURI()).getBody();
+                .getIsUniqueIp(request.getRemoteAddr(), request.getRequestURI()).getBody();
 
         log.info("IP: {}", existIp);
         sendStatisticHit(request);

@@ -5,16 +5,19 @@ services:
     image: stats-server-image
     container_name: stats-server-container
     depends_on:
+      main-db:
+        condition: service_started
       stats-db:
         condition: service_healthy
     ports:
       - "9090:9090"
     environment:
-      - CLIENT_STAT_URL=http://localhost:9090
       - STAT_URL_DB=jdbc:postgresql://stats-db:5432/stats
       - POSTGRES_USER_STAT=postgres
       - POSTGRES_PASSWORD_STAT=123
     restart: always
+    networks:
+      - cloud
 
   stats-db:
     image: postgres:14-alpine
@@ -34,6 +37,8 @@ services:
       timeout: 5s
       retries: 5
     restart: always
+    networks:
+      - cloud
 
   main-service:
     build: ./main
@@ -45,11 +50,13 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - CLIENT_STAT_URL=http://localhost:9090
-      - CLIENT_MAIN_URL=http://localhost:8080
+      - CLIENT_STAT_URL=http://stats-server:9090
+      - CLIENT_MAIN_URL=http://main-service:8080
       - MAIN_URL_DB=jdbc:postgresql://main-db:5432/main
       - POSTGRES_USER_MAIN=postgres
       - POSTGRES_PASSWORD_MAIN=123
+    networks:
+      - cloud
 #    restart: always
 
   main-db:
@@ -68,3 +75,9 @@ services:
       timeout: 5s
       retries: 5
     restart: always
+    networks:
+      - cloud
+
+networks:
+    cloud:
+      external: false

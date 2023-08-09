@@ -8,18 +8,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.main.user.dto.NewUserRequest;
 import ru.practicum.main.user.dto.UserDto;
-import ru.practicum.main.user.dto.UserShortDto;
 import ru.practicum.main.user.exception.UserNotFoundException;
 import ru.practicum.main.user.exception.UserUniqueParameterEmailException;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repositories.UserRepository;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static ru.practicum.main.user.mapper.UserMapperUtil.*;
-import static ru.practicum.main.common.util.PaginationUtil.getPaginationAsc;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +25,7 @@ public class UserAdminServiceImpl implements UserAdminService {
     private final UserRepository userRepository;
 
     @Override
-    public UserShortDto addUser(NewUserRequest request) {
+    public UserDto addUser(NewUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new UserUniqueParameterEmailException("User with this email already exists");
         }
@@ -36,7 +33,7 @@ public class UserAdminServiceImpl implements UserAdminService {
         User user = userRepository.save(fromDto(request));
         log.info("Added user: {}", user);
 
-        return toUserShortDto(user);
+        return toUserDto(user);
     }
 
     @Override

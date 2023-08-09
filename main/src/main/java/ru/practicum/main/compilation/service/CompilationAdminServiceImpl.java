@@ -8,7 +8,6 @@ import ru.practicum.main.compilation.dto.NewCompilationDto;
 import ru.practicum.main.compilation.dto.UpdateCompilationRequest;
 import ru.practicum.main.compilation.exception.CompilationNotFoundException;
 import ru.practicum.main.compilation.exception.CompilationUniqueTitleException;
-import ru.practicum.main.compilation.mapper.CompilationMapperUtil;
 import ru.practicum.main.compilation.model.Compilation;
 import ru.practicum.main.compilation.repositories.CompilationRepository;
 import ru.practicum.main.event.model.Event;
@@ -17,7 +16,6 @@ import ru.practicum.main.event.repositories.EventRepository;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static ru.practicum.main.compilation.mapper.CompilationMapperUtil.toCompilationDto;
 

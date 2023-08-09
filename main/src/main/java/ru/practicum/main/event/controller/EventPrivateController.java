@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.event.dto.*;
@@ -70,7 +69,8 @@ public class EventPrivateController {
 
     @PatchMapping("/{eventId}/requests")
     public ResponseEntity<EventRequestStatusUpdateResult> updateEventRequests(@PathVariable @Positive Long userId,
-                                                                              @PathVariable @Positive Long eventId,
+                                                                              @PathVariable("eventId")
+                                                                              @Positive Long eventId,
                                                                               @RequestBody
                                                                               EventRequestStatusUpdateRequest eventStatusUpdateRequest) {
 

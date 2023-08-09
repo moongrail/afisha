@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.main.common.ApiError;
+import ru.practicum.main.event.exception.EventConflictException;
 import ru.practicum.main.event.exception.EventDatePatameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
-import ru.practicum.main.event.exception.EventConflictException;
 import ru.practicum.main.event.exception.EventStateConflictException;
 
 import java.util.Arrays;
@@ -25,7 +25,7 @@ public class EventErrorHandler {
     public ApiError handleEventNotFoundException(EventNotFoundException ex) {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
-                .status(HttpStatus.NOT_FOUND)
+                .status(HttpStatus.CONFLICT)
                 .reason(ex.getCause() != null ? ex.getCause().toString() : ex.getMessage())
                 .message(ex.getMessage())
                 .timestamp(now())
@@ -39,7 +39,7 @@ public class EventErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.CONFLICT)
-                .reason(ex.getCause().toString())
+                .reason(ex.getCause() != null ? ex.getCause().toString() : ex.getMessage())
                 .message(ex.getMessage())
                 .timestamp(now())
                 .build();

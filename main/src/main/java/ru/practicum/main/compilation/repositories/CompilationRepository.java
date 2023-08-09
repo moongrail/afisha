@@ -8,7 +8,7 @@ import ru.practicum.main.compilation.model.Compilation;
 import java.util.List;
 
 @Repository
-public interface CompilationRepository extends JpaRepository<Compilation,Long> {
+public interface CompilationRepository extends JpaRepository<Compilation, Long> {
     boolean existsByTitle(String title);
 
     List<Compilation> findByPinned(Boolean pinned, Pageable pageable);

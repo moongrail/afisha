@@ -10,16 +10,15 @@ import org.springframework.stereotype.Service;
 import ru.practicum.main.category.exception.CategoryNotFoundException;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repositories.CategoryRepository;
-import ru.practicum.main.event.dto.UpdateEventAdminRequest;
 import ru.practicum.main.event.dto.EventFullDto;
-import ru.practicum.main.event.model.StateActionAdmin;
+import ru.practicum.main.event.dto.UpdateEventAdminRequest;
 import ru.practicum.main.event.exception.EventDatePatameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.exception.EventStateConflictException;
 import ru.practicum.main.event.model.Event;
 import ru.practicum.main.event.model.EventState;
+import ru.practicum.main.event.model.StateActionAdmin;
 import ru.practicum.main.event.repositories.EventRepository;
-import ru.practicum.main.event.repositories.EventSpecifications;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -29,6 +28,7 @@ import static java.time.LocalDateTime.now;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDto;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDtoList;
 import static ru.practicum.main.event.model.EventState.*;
+import static ru.practicum.main.event.repositories.EventSpecifications.*;
 
 @Service
 @Slf4j
@@ -37,6 +37,20 @@ import static ru.practicum.main.event.model.EventState.*;
 public class EventAdminServiceImpl implements EventAdminService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
+
+    private static void checkStateAction(UpdateEventAdminRequest requestToPatch, Event event) {
+        if (requestToPatch.getStateAction() == StateActionAdmin.PUBLISH_EVENT
+                && event.getState() != PENDING) {
+            log.error("Event is not pending");
+            throw new EventStateConflictException("Event is not pending");
+        }
+
+        if (requestToPatch.getStateAction() == StateActionAdmin.REJECT_EVENT
+                && event.getState() == PUBLISHED) {
+            log.error("Event published");
+            throw new EventStateConflictException("Event published");
+        }
+    }
 
     @Override
     public EventFullDto patchEvent(Long eventId, UpdateEventAdminRequest requestToPatch) {
@@ -48,8 +62,8 @@ public class EventAdminServiceImpl implements EventAdminService {
 
         checkStateAction(requestToPatch, event);
 
-        if (requestToPatch.getEventDate() != null){
-        checkEventDate(requestToPatch.getEventDate());
+        if (requestToPatch.getEventDate() != null) {
+            checkEventDate(requestToPatch.getEventDate());
         }
 
         if (requestToPatch.getAnnotation() != null) {
@@ -79,11 +93,15 @@ public class EventAdminServiceImpl implements EventAdminService {
         if (requestToPatch.getRequestModeration() != null) {
             event.setRequestModeration(requestToPatch.getRequestModeration());
         }
+        if (requestToPatch.getTitle() != null) {
+            event.setTitle(requestToPatch.getTitle());
+        }
+
         if (requestToPatch.getStateAction() != null) {
             if (requestToPatch.getStateAction().equals(StateActionAdmin.PUBLISH_EVENT)) {
                 event.setState(PUBLISHED);
                 event.setPublishedOn(now());
-            }else {
+            } else {
                 event.setState(CANCELED);
             }
         }
@@ -101,39 +119,25 @@ public class EventAdminServiceImpl implements EventAdminService {
         Specification<Event> specification = Specification.where(null);
 
         if (users != null && users.length > 0) {
-            specification = specification.and(EventSpecifications.hasUsers(users));
+            specification = specification.and(hasUsers(users));
         }
         if (states != null && states.length > 0) {
-            specification = specification.and(EventSpecifications.hasStates(states));
+            specification = specification.and(hasStates(states));
         }
         if (categories != null && categories.length > 0) {
-            specification = specification.and(EventSpecifications.hasCategories(categories));
+            specification = specification.and(hasCategories(categories));
         }
         if (rangeStart != null) {
-            specification = specification.and(EventSpecifications.eventDateAfterOrEqual(rangeStart));
+            specification = specification.and(eventDateAfterOrEqual(rangeStart));
         }
         if (rangeEnd != null) {
-            specification = specification.and(EventSpecifications.eventDateBeforeOrEqual(rangeEnd));
+            specification = specification.and(eventDateBeforeOrEqual(rangeEnd));
         }
 
         Pageable pageable = PageRequest.of(from, size);
         Page<Event> eventPage = eventRepository.findAll(specification, pageable);
 
         return toEventFullDtoList(eventPage);
-    }
-
-    private static void checkStateAction(UpdateEventAdminRequest requestToPatch, Event event) {
-        if (requestToPatch.getStateAction() == StateActionAdmin.PUBLISH_EVENT
-                && event.getState() != PENDING) {
-            log.error("Event is not pending");
-            throw new EventStateConflictException("Event is not pending");
-        }
-
-        if (requestToPatch.getStateAction() == StateActionAdmin.REJECT_EVENT
-                && event.getState() == PUBLISHED) {
-            log.error("Event published");
-            throw new EventStateConflictException("Event published");
-        }
     }
 
     private void checkEventDate(LocalDateTime eventDate) {

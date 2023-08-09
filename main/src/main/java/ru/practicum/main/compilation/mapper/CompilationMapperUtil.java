@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @UtilityClass
 public class CompilationMapperUtil {
 
-    public static Compilation fromDto(NewCompilationDto newCompilationDto){
+    public static Compilation fromDto(NewCompilationDto newCompilationDto) {
         return Compilation.builder()
                 .title(newCompilationDto.getTitle())
                 .pinned(newCompilationDto.getPinned())
@@ -33,7 +33,7 @@ public class CompilationMapperUtil {
                 .build();
     }
 
-    public static List<CompilationDto> toCompilationDtoList(List<Compilation> compilations){
+    public static List<CompilationDto> toCompilationDtoList(List<Compilation> compilations) {
         return compilations.stream()
                 .map(CompilationMapperUtil::toCompilationDto)
                 .collect(Collectors.toList());

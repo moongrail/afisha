@@ -8,6 +8,7 @@ import ru.practicum.main.event.model.Location;
 import ru.practicum.main.user.model.User;
 
 import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder

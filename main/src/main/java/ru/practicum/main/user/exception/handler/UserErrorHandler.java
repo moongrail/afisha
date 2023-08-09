@@ -12,10 +12,10 @@ import ru.practicum.main.user.exception.UserNotFoundException;
 import ru.practicum.main.user.exception.UserParameterException;
 import ru.practicum.main.user.exception.UserUniqueParameterEmailException;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+
+import static java.time.LocalDateTime.now;
 
 @RestControllerAdvice(basePackageClasses = UserAdminController.class)
 public class UserErrorHandler {
@@ -26,9 +26,9 @@ public class UserErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.NOT_FOUND)
-                .reason(ex.getCause().toString())
+                .reason(ex.getCause() != null ? ex.getCause().toString() : ex.getMessage())
                 .message(ex.getMessage())
-                .timestamp(LocalDateTime.from(Instant.now()))
+                .timestamp(now())
                 .build();
     }
 
@@ -39,9 +39,9 @@ public class UserErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.BAD_REQUEST)
-                .reason(ex.getCause().toString())
+                .reason(ex.getCause() != null ? ex.getCause().toString() : ex.getMessage())
                 .message(ex.getMessage())
-                .timestamp(LocalDateTime.from(Instant.now()))
+                .timestamp(now())
                 .build();
     }
 
@@ -52,9 +52,9 @@ public class UserErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.CONFLICT)
-                .reason(ex.getCause().toString())
+                .reason(ex.getCause() != null ? ex.getCause().toString() : ex.getMessage())
                 .message(ex.getMessage())
-                .timestamp(LocalDateTime.from(Instant.now()))
+                .timestamp(now())
                 .build();
     }
 
@@ -65,9 +65,9 @@ public class UserErrorHandler {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.BAD_REQUEST)
-                .reason(ex.getCause().toString())
+                .reason(ex.getCause() != null ? ex.getCause().toString() : ex.getMessage())
                 .message(ex.getMessage())
-                .timestamp(LocalDateTime.from(Instant.now()))
+                .timestamp(now())
                 .build();
     }
 }

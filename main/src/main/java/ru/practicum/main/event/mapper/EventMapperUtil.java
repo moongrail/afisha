@@ -2,21 +2,16 @@ package ru.practicum.main.event.mapper;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
-import ru.practicum.main.category.mapper.CategoryMapperUtil;
-import ru.practicum.main.category.model.Category;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.dto.NewEventDto;
 import ru.practicum.main.event.model.Event;
-import ru.practicum.main.user.mapper.UserMapperUtil;
-import ru.practicum.main.user.model.User;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.practicum.main.category.mapper.CategoryMapperUtil.*;
-import static ru.practicum.main.user.mapper.UserMapperUtil.*;
+import static ru.practicum.main.category.mapper.CategoryMapperUtil.toCategoryDto;
+import static ru.practicum.main.user.mapper.UserMapperUtil.toUserShortDto;
 
 @UtilityClass
 public class EventMapperUtil {
@@ -42,7 +37,7 @@ public class EventMapperUtil {
     }
 
     public static List<EventFullDto> toEventFullDtoList(Page<Event> eventPage) {
-        return  eventPage.getContent().stream()
+        return eventPage.getContent().stream()
                 .map(EventMapperUtil::toEventFullDto)
                 .collect(Collectors.toList());
     }
@@ -61,7 +56,7 @@ public class EventMapperUtil {
                 .build();
     }
 
-    public static List<EventShortDto> toEventShortDtoList(List<Event> events){
+    public static List<EventShortDto> toEventShortDtoList(List<Event> events) {
         return events.stream()
                 .map(EventMapperUtil::toEventShortDto)
                 .collect(Collectors.toList());

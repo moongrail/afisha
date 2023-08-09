@@ -5,13 +5,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.main.category.controllers.CategoryAdminController;
 import ru.practicum.main.category.exception.CategoryNotFoundException;
 import ru.practicum.main.category.exception.CategoryUniqueNameException;
 import ru.practicum.main.common.ApiError;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 

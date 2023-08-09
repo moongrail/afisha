@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.main.common.ApiError;
-import ru.practicum.main.compilation.controller.CompilationAdminController;
 import ru.practicum.main.compilation.exception.CompilationNotFoundException;
 import ru.practicum.main.compilation.exception.CompilationUniqueTitleException;
 
@@ -21,7 +20,7 @@ public class CompilationErrorHandler {
     @ExceptionHandler(CompilationUniqueTitleException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
-    public ApiError handleCompilationUniqueTitleException(CompilationUniqueTitleException ex){
+    public ApiError handleCompilationUniqueTitleException(CompilationUniqueTitleException ex) {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.CONFLICT)
@@ -34,7 +33,7 @@ public class CompilationErrorHandler {
     @ExceptionHandler(CompilationNotFoundException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     @ResponseBody
-    public ApiError handleCompilationNotFoundException(CompilationNotFoundException ex){
+    public ApiError handleCompilationNotFoundException(CompilationNotFoundException ex) {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.NOT_FOUND)

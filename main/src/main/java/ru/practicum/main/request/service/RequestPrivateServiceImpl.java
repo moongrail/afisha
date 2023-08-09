@@ -3,13 +3,13 @@ package ru.practicum.main.request.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.exception.EventConflictException;
+import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.model.Event;
 import ru.practicum.main.event.repositories.EventRepository;
 import ru.practicum.main.request.dto.ParticipationRequestDto;
-import ru.practicum.main.request.exception.RequestNotFoundException;
 import ru.practicum.main.request.exception.RequestConflictException;
+import ru.practicum.main.request.exception.RequestNotFoundException;
 import ru.practicum.main.request.mapper.RequestMapperUtil;
 import ru.practicum.main.request.model.Request;
 import ru.practicum.main.request.repositories.RequestRepository;
@@ -37,6 +37,21 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
 
+    private static void checkParticipantEvent(Event event) {
+        if (event.getParticipantLimit() != 0
+                && (event.getParticipantLimit() - event.getConfirmedRequests()) <= 0) {
+            log.warn("Participant limit reached");
+            throw new EventConflictException("Participant limit reached");
+        }
+    }
+
+    private static void checkStateEvent(Event event) {
+        if (!event.getState().equals(PUBLISHED)) {
+            log.warn("Event not published");
+            throw new EventConflictException("Event not published");
+        }
+    }
+
     @Override
     public List<ParticipationRequestDto> getAllRequestsByIdUser(Long userId) {
         checkUserExist(userId);
@@ -50,10 +65,9 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
         return toParticipationRequestDtoList(requests);
     }
 
-
     @Override
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
-        if (!userRepository.existsById(userId)){
+        if (!userRepository.existsById(userId)) {
             throw new UserParameterException("User not found by id = " + userId);
         }
 
@@ -100,7 +114,7 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
 
         if (event.getConfirmedRequests() > 0) {
             eventRepository.setEventConfirmedRequests(updatedRequest.getEvent().getId(),
-                            event.getConfirmedRequests() - 1);
+                    event.getConfirmedRequests() - 1);
         }
 
         return toParticipationRequestDto(updatedRequest);
@@ -123,31 +137,10 @@ public class RequestPrivateServiceImpl implements RequestPrivateService {
         return saveRequest;
     }
 
-    private static void checkParticipantEvent(Event event) {
-        if (event.getParticipantLimit() != 0
-                && (event.getParticipantLimit() - event.getConfirmedRequests()) <= 0) {
-            log.warn("Participant limit reached");
-            throw new EventConflictException("Participant limit reached");
-        }
-    }
-
-    private static void checkStateEvent(Event event) {
-        if (!event.getState().equals(PUBLISHED)){
-            log.warn("Event not published");
-            throw new EventConflictException("Event not published");
-        }
-    }
-
     private void checkUserExist(Long userId) {
         if (!userRepository.existsById(userId)) {
             log.warn("User not found with id = {}", userId);
             throw new UserNotFoundException("User not found with id = " + userId);
         }
     }
-//    private void checkEventExist(Long eventId) {
-//        if (!eventRepository.existsById(eventId)) {
-//            log.error("Event not found with id = {}", eventId);
-//            throw new EventNotFoundException("Event not found with id = " + eventId);
-//        }
-//    }
 }

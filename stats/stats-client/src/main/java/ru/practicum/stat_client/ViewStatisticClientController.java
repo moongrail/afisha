@@ -29,8 +29,10 @@ public class ViewStatisticClientController {
 
         return viewStatisticClient.getViewStatistic(start, end, uris, unique);
     }
+
     @GetMapping("/{ip}")
-    public ResponseEntity<Object> getIsUniqueIp(@PathVariable String ip, @RequestParam(name = "uri") String uri) {
+    public ResponseEntity<Object> getIsUniqueIp(@PathVariable String ip,
+                                                @RequestParam(name = "uri") String uri) {
 
         return viewStatisticClient.getIsUniqueIp(ip, uri);
     }

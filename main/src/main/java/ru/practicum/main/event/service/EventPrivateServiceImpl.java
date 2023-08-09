@@ -53,7 +53,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         Pageable pageable = PageRequest.of(from, size, Sort.Direction.ASC, "id");
 
-        List<Event> eventsByInitiatorId = eventRepository.findEventsByInitiatorId(userId, pageable);
+        List<Event> eventsByInitiatorId = eventRepository.findEventsByInitiatorId(userId, pageable).getContent();
 
         log.info("findAllByUserId-findAllByUserId: {}", eventsByInitiatorId);
         return toEventShortDtoList(eventsByInitiatorId);
@@ -117,13 +117,14 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public List<ParticipationRequestDto> findAllByUserIdAndEventIdRequests(Long userId, Long eventId) {
-
+        log.info("findAllByUserIdAndEventIdRequests: userId: {} eventId: {}", userId, eventId);
         checkUserExist(userId);
         checkEventExist(eventId);
 
         List<Request> requestsByRequesterIdAndEventId = requestRepository
                 .findRequestsByRequester_IdAndEvent_Id(userId, eventId);
-        log.info("findAllByUserIdAndEventIdRequests: {}", requestsByRequesterIdAndEventId);
+        log.info("findAllByUserIdAndEventIdRequests: {} userId: {} eventId: {}",
+                requestsByRequesterIdAndEventId, userId, eventId);
 
         return toParticipationRequestDtoList(requestsByRequesterIdAndEventId);
     }
@@ -132,15 +133,16 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     public EventRequestStatusUpdateResult updateEventRequests(Long userId, Long eventId,
                                                               EventRequestStatusUpdateRequest eventStatusUpdateRequest) {
         checkUserExist(userId);
-        Event event = eventRepository.findById(eventId)
+        Event event = eventRepository
+                .findEventByInitiatorIdAndId(userId, eventId)
                 .orElseThrow(() -> new EventNotFoundException("Event not found by id = " + eventId));
 
         if (event.getParticipantLimit() == 0 || !event.getRequestModeration()) {
             throw new UnsupportedOperationException("Confirmation of requests is not required for this event.");
         }
 
-        List<Request> requestsToUpdate = requestRepository.findRequestsByEvent_IdAndIdIn(eventId,
-                eventStatusUpdateRequest.getRequestIds());
+        List<Request> requestsToUpdate = requestRepository.findRequestsByEvent_IdAndIdIn(
+                eventId, eventStatusUpdateRequest.getRequestIds());
 
         if (requestsToUpdate.isEmpty()) {
             log.warn("No requests found with the given IDs.");
@@ -174,8 +176,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
         if (newStatus == RequestStatus.CONFIRMED) {
             event.setConfirmedRequests(event.getConfirmedRequests() + requestsToUpdate.size());
-        } else if (newStatus == RequestStatus.REJECTED) {
-            requestRepository.deleteRequestsByEvent_IdAndStatus(eventId, RequestStatus.PENDING);
         }
 
         return EventRequestStatusUpdateResult.builder()

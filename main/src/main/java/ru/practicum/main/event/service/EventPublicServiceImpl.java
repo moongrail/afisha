@@ -2,7 +2,6 @@ package ru.practicum.main.event.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -11,20 +10,18 @@ import org.springframework.stereotype.Service;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.dto.EventTypeSort;
+import ru.practicum.main.event.exception.EventDatePatameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
-import ru.practicum.main.event.mapper.EventMapperUtil;
 import ru.practicum.main.event.model.Event;
-import ru.practicum.main.event.model.EventState;
 import ru.practicum.main.event.repositories.EventRepository;
 import ru.practicum.main.event.repositories.EventSpecifications;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDto;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventShortDtoList;
-import static ru.practicum.main.event.model.EventState.*;
+import static ru.practicum.main.event.model.EventState.PUBLISHED;
 
 @Service
 @Slf4j
@@ -36,6 +33,12 @@ public class EventPublicServiceImpl implements EventPublicService {
     public List<EventShortDto> findAllEvents(String text, Long[] categories, Boolean paid, LocalDateTime rangeStart,
                                              LocalDateTime rangeEnd, Boolean onlyAvailable, EventTypeSort sort,
                                              Integer from, Integer size) {
+
+        if (rangeStart != null && rangeEnd != null) {
+            if (rangeStart.isAfter(rangeEnd)) {
+                throw new EventDatePatameterException("rangeStart must be before rangeEnd");
+            }
+        }
 
         Specification<Event> specification = Specification.where(null);
 
@@ -59,10 +62,10 @@ public class EventPublicServiceImpl implements EventPublicService {
         }
 
         Pageable pageable;
-        if (sort.equals(EventTypeSort.EVENT_DATE)){
-            pageable = PageRequest.of(from, size,Sort.Direction.ASC, "eventDate");
-        }else {
-            pageable = PageRequest.of(from, size,Sort.Direction.DESC, "views");
+        if (sort.equals(EventTypeSort.EVENT_DATE)) {
+            pageable = PageRequest.of(from, size, Sort.Direction.ASC, "eventDate");
+        } else {
+            pageable = PageRequest.of(from, size, Sort.Direction.DESC, "views");
         }
 
         List<Event> content = eventRepository.findAll(specification, pageable).getContent();

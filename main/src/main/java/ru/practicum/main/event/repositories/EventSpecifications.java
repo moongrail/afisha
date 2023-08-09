@@ -1,11 +1,13 @@
 package ru.practicum.main.event.repositories;
 
+import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
 import ru.practicum.main.event.model.Event;
 import ru.practicum.main.event.model.EventState;
 
 import java.time.LocalDateTime;
 
+@UtilityClass
 public class EventSpecifications {
     public static Specification<Event> hasUsers(Long[] users) {
         return (root, query, criteriaBuilder) -> root.get("initiator").get("id").in(users);
