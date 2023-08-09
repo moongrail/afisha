@@ -65,9 +65,10 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         checkEventTitle(newEventDto);
 
         Event newEvent = buildEventToCreated(userId, newEventDto);
+        Event save = eventRepository.save(newEvent);
 
-        log.info("createEvent: {}", newEvent);
-        return toEventFullDto(eventRepository.save(newEvent));
+        log.info("createEvent: {}", save);
+        return toEventFullDto(save);
     }
 
     @Override
@@ -117,16 +118,23 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     @Override
     public List<ParticipationRequestDto> findAllByUserIdAndEventIdRequests(Long userId, Long eventId) {
-        log.info("findAllByUserIdAndEventIdRequests: userId: {} eventId: {}", userId, eventId);
         checkUserExist(userId);
-        checkEventExist(eventId);
+        Event event = eventRepository.findById(eventId).orElseThrow(() ->
+                new EventNotFoundException("Event not found by id = " + eventId));
 
-        List<Request> requestsByRequesterIdAndEventId = requestRepository
-                .findRequestsByRequester_IdAndEvent_Id(userId, eventId);
+        List<Request> requestsByEventId = new ArrayList<>();
+
+        if (event.getInitiator().getId().equals(userId)) {
+            requestsByEventId.addAll(requestRepository.findRequestsByEvent_Id(eventId));
+        }
+
+        requestsByEventId.addAll(requestRepository
+                .findRequestsByRequester_IdAndEvent_Id(userId, eventId));
+
         log.info("findAllByUserIdAndEventIdRequests: {} userId: {} eventId: {}",
-                requestsByRequesterIdAndEventId, userId, eventId);
+                requestsByEventId, userId, eventId);
 
-        return toParticipationRequestDtoList(requestsByRequesterIdAndEventId);
+        return toParticipationRequestDtoList(requestsByEventId);
     }
 
     @Override
@@ -182,12 +190,6 @@ public class EventPrivateServiceImpl implements EventPrivateService {
                 .confirmedRequests(toParticipationRequestDtoList(confirmedRequests))
                 .rejectedRequests(toParticipationRequestDtoList(rejectedRequests))
                 .build();
-    }
-
-    private void checkEventExist(Long eventId) {
-        if (!eventRepository.existsById(eventId)) {
-            throw new EventNotFoundException("Event not found by id = " + eventId);
-        }
     }
 
     private Event buildUpdateEvent(UpdateEventUserRequest updateEventUserRequest, Event oldEvent) {
