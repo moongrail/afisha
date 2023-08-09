@@ -30,7 +30,7 @@ public class StatisticServiceImpl implements StatisticService {
 
     @Override
     public List<ViewStatsDto> getStats(LocalDateTime start, LocalDateTime end, String[] uris, boolean unique) {
-        if (start != null && end != null){
+        if (start != null && end != null) {
             if (start.isAfter(end)) {
                 throw new StatDateParameterException("Начальная дата должна быть раньше конечной");
             }
