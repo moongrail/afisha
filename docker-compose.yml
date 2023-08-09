@@ -57,7 +57,7 @@ services:
       - POSTGRES_PASSWORD_MAIN=123
     networks:
       - cloud
-#    restart: always
+    restart: always
 
   main-db:
     image: postgres:14-alpine
