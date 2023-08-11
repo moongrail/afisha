@@ -45,4 +45,6 @@ public interface StatisticRepository extends CrudRepository<Statistic, Long> {
     List<ViewStatsDto> getAllStats(LocalDateTime start,
                                    LocalDateTime end,
                                    String[] uris);
+
+    Boolean existsByIpAndUri(String ip, String uri);
 }

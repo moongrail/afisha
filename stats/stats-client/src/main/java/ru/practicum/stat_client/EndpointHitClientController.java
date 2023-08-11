@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.practicum.stat_dto.EndpointHitDto;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -22,9 +21,7 @@ public class EndpointHitClientController {
     private final EndpointHitClient endpointHitClient;
 
     @PostMapping
-    public ResponseEntity<Object> addHit(@RequestBody @Valid EndpointHitDto endpointHitDto, HttpServletRequest request) {
-
-        endpointHitDto.setIp(request.getRemoteAddr());
+    public ResponseEntity<Object> addHit(@RequestBody @Valid EndpointHitDto endpointHitDto) {
 
         log.info("addHit: {}", endpointHitDto);
         return endpointHitClient.addHit(endpointHitDto);
