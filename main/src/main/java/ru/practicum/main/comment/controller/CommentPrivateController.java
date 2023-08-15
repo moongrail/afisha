@@ -9,6 +9,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.main.comment.dto.CommentDto;
 import ru.practicum.main.comment.dto.CommentRequestCreateDto;
+import ru.practicum.main.comment.dto.CommentRequestUpdateDto;
 import ru.practicum.main.comment.service.CommentPrivateService;
 
 import javax.validation.Valid;
@@ -20,15 +21,36 @@ import javax.validation.constraints.Positive;
 @Slf4j
 @Validated
 public class CommentPrivateController {
-  private CommentPrivateService commentPrivateService;
+    private final CommentPrivateService commentPrivateService;
 
-  @PostMapping
+    @PostMapping
     public ResponseEntity<CommentDto> createComment(@PathVariable @Positive Long userId,
                                                     @PathVariable @Positive Long eventId,
-                                                    @RequestBody @Valid CommentRequestCreateDto requestCreateDto){
+                                                    @RequestBody @Valid CommentRequestCreateDto requestCreateDto) {
 
-    return ResponseEntity
-            .status(HttpStatus.CREATED)
-            .body(commentPrivateService.createComment(userId,eventId,requestCreateDto));
-  }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(commentPrivateService.createComment(userId, eventId, requestCreateDto));
+    }
+
+    @PatchMapping("/{commentId}")
+    public ResponseEntity<CommentDto> patchComment(@PathVariable @Positive Long userId,
+                                                   @PathVariable @Positive Long eventId,
+                                                   @PathVariable @Positive Long commentId,
+                                                   @RequestBody @Valid CommentRequestUpdateDto requestUpdateDto) {
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(commentPrivateService.patchComment(userId, eventId, commentId, requestUpdateDto));
+    }
+
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable @Positive Long userId,
+                                              @PathVariable @Positive Long eventId,
+                                              @PathVariable @Positive Long commentId) {
+        commentPrivateService.deleteComment(userId, eventId, commentId);
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
+                                              }
 }

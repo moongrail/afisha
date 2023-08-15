@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.main.event.model.Event;
 import ru.practicum.main.user.model.User;
 
 import javax.persistence.*;
@@ -23,6 +24,8 @@ public class Comment {
     private String text;
     @ManyToOne
     private User actor;
+    @ManyToOne
+    private Event event;
     @Column(nullable = false)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;

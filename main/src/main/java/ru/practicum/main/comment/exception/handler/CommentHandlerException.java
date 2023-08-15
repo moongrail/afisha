@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.main.comment.exception.CommentConflictException;
 import ru.practicum.main.comment.exception.CommentNotFoundException;
 import ru.practicum.main.common.ApiError;
 
@@ -22,11 +23,23 @@ public class CommentHandlerException {
     public ApiError handlerCommentNotFoundException(CommentNotFoundException ex){
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
-                .status(HttpStatus.CONFLICT)
+                .status(HttpStatus.NOT_FOUND)
                 .reason(ex.getCause().toString())
                 .message(ex.getMessage())
                 .timestamp(LocalDateTime.from(Instant.now()))
                 .build();
     }
 
+    @ExceptionHandler(value = CommentConflictException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseBody
+    public ApiError handlerCommentNotFoundException(CommentConflictException ex){
+        return ApiError.builder()
+                .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
+                .status(HttpStatus.CONFLICT)
+                .reason(ex.getCause().toString())
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.from(Instant.now()))
+                .build();
+    }
 }
