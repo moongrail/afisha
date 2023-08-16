@@ -1,13 +1,9 @@
 package ru.practicum.main.comment.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.main.user.model.User;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter

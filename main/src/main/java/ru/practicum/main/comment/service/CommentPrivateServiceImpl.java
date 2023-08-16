@@ -2,8 +2,13 @@ package ru.practicum.main.comment.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.main.comment.dto.CommentDto;
+import ru.practicum.main.comment.dto.CommentFullDto;
 import ru.practicum.main.comment.dto.CommentRequestCreateDto;
 import ru.practicum.main.comment.dto.CommentRequestUpdateDto;
 import ru.practicum.main.comment.exception.CommentConflictException;
@@ -19,10 +24,10 @@ import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repositories.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static java.time.LocalDateTime.*;
-import static ru.practicum.main.comment.mapper.CommentMapperUtil.fromCreateRequestDro;
-import static ru.practicum.main.comment.mapper.CommentMapperUtil.toCommentDto;
+import static ru.practicum.main.comment.mapper.CommentMapperUtil.*;
 
 @Service
 @RequiredArgsConstructor
@@ -75,6 +80,48 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
         checkOwnerComment(userId, comment);
 
         commentRepository.deleteById(commentId);
+    }
+
+    @Override
+    public CommentFullDto findCommentByUserIdAndEventId(Long userId, Long eventId, Long commentId) {
+        checkUserExist(userId);
+        checkEventExist(eventId);
+
+        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
+                new CommentNotFoundException("Comment not found"));
+
+        checkOwnerComment(userId, comment);
+
+
+        return toCommentFullDto(comment);
+    }
+
+    @Override
+    public List<CommentFullDto> findAllCommentsByUserIdAndEventId(Long userId, Long eventId ,Integer from, Integer size) {
+        checkUserExist(userId);
+        checkEventExist(eventId);
+
+        Pageable pageable = PageRequest.of(from, size, Sort.Direction.DESC, "id");
+
+        List<Comment> comments = commentRepository
+                .findCommentsByActor_IdAndEvent_Id(eventId, userId, pageable)
+                .getContent();
+
+        return toCommentFullDtoList(comments);
+    }
+
+    @Override
+    public List<CommentFullDto> searchCommentsByUserIdAndEventIdAndText(Long userId, Long eventId, String text,
+                                                                        Integer from, Integer size) {
+        checkUserExist(userId);
+        checkEventExist(eventId);
+
+        Pageable pageable = PageRequest.of(from, size, Sort.Direction.DESC, "id");
+
+        Page<Comment> commentsByActorIdAndEventIdAndTextContainingIgnoreCase = commentRepository
+                .findCommentsByActor_IdAndEvent_IdAndTextContainingIgnoreCase(eventId, userId, text, pageable);
+
+        return toCommentFullDtoList(commentsByActorIdAndEventIdAndTextContainingIgnoreCase.getContent());
     }
 
     private void checkEventExist(Long eventId) {

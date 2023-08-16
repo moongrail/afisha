@@ -33,6 +33,7 @@ public class EventMapperUtil {
                 .state(updatedEvent.getState())
                 .title(updatedEvent.getTitle())
                 .views(updatedEvent.getViews())
+                .comments(updatedEvent.getComments())
                 .build();
     }
 

@@ -2,10 +2,13 @@ package ru.practicum.main.comment.mapper;
 
 import lombok.experimental.UtilityClass;
 import ru.practicum.main.comment.dto.CommentDto;
+import ru.practicum.main.comment.dto.CommentFullDto;
 import ru.practicum.main.comment.dto.CommentRequestCreateDto;
 import ru.practicum.main.comment.model.Comment;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
 
@@ -27,5 +30,22 @@ public class CommentMapperUtil {
                 .created(comment.getCreated())
                 .modified(comment.getModified())
                 .build();
+    }
+
+    public static CommentFullDto toCommentFullDto(Comment comment) {
+        return CommentFullDto.builder()
+                .id(comment.getId())
+                .text(comment.getText())
+                .actor(comment.getActor())
+                .event(comment.getEvent())
+                .created(comment.getCreated())
+                .modified(comment.getModified())
+                .build();
+    }
+
+    public  static List<CommentFullDto> toCommentFullDtoList(List<Comment> comments) {
+        return comments.stream()
+                .map(CommentMapperUtil::toCommentFullDto)
+                .collect(Collectors.toList());
     }
 }
