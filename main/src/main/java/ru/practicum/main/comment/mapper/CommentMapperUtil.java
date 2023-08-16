@@ -32,6 +32,12 @@ public class CommentMapperUtil {
                 .build();
     }
 
+    public static List<CommentDto> toCommentDtoList(List<Comment> comments) {
+        return comments.stream()
+                .map(CommentMapperUtil::toCommentDto)
+                .collect(Collectors.toList());
+    }
+
     public static CommentFullDto toCommentFullDto(Comment comment) {
         return CommentFullDto.builder()
                 .id(comment.getId())

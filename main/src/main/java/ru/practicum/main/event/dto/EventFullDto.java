@@ -3,6 +3,7 @@ package ru.practicum.main.event.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import ru.practicum.main.category.model.Category;
+import ru.practicum.main.comment.dto.CommentDto;
 import ru.practicum.main.comment.model.Comment;
 import ru.practicum.main.event.model.EventState;
 import ru.practicum.main.event.model.Location;
@@ -36,5 +37,5 @@ public class EventFullDto {
     private EventState state;
     private String title;
     private Long views;
-    private List<Comment> comments;
+    private List<CommentDto> comments;
 }

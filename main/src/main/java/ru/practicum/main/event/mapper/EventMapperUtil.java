@@ -2,15 +2,18 @@ package ru.practicum.main.event.mapper;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
+import ru.practicum.main.comment.mapper.CommentMapperUtil;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.dto.NewEventDto;
 import ru.practicum.main.event.model.Event;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.practicum.main.category.mapper.CategoryMapperUtil.toCategoryDto;
+import static ru.practicum.main.comment.mapper.CommentMapperUtil.toCommentDtoList;
 import static ru.practicum.main.user.mapper.UserMapperUtil.toUserShortDto;
 
 @UtilityClass
@@ -33,7 +36,6 @@ public class EventMapperUtil {
                 .state(updatedEvent.getState())
                 .title(updatedEvent.getTitle())
                 .views(updatedEvent.getViews())
-                .comments(updatedEvent.getComments())
                 .build();
     }
 

@@ -47,7 +47,4 @@ public class Event {
     private EventState state;
     private String title;
     private Long views;
-    @OneToMany
-    @JoinColumn(name = "event_id")
-    private List<Comment> comments;
 }

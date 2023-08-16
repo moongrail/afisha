@@ -7,6 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import ru.practicum.main.comment.mapper.CommentMapperUtil;
+import ru.practicum.main.comment.model.Comment;
+import ru.practicum.main.comment.repository.CommentRepository;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.dto.EventTypeSort;
@@ -16,9 +19,11 @@ import ru.practicum.main.event.model.Event;
 import ru.practicum.main.event.repositories.EventRepository;
 import ru.practicum.main.event.repositories.EventSpecifications;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static ru.practicum.main.comment.mapper.CommentMapperUtil.*;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDto;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventShortDtoList;
 import static ru.practicum.main.event.model.EventState.PUBLISHED;
@@ -26,8 +31,10 @@ import static ru.practicum.main.event.model.EventState.PUBLISHED;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 public class EventPublicServiceImpl implements EventPublicService {
     private final EventRepository eventRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<EventShortDto> findAllEvents(String text, Long[] categories, Boolean paid, LocalDateTime rangeStart,
@@ -79,14 +86,18 @@ public class EventPublicServiceImpl implements EventPublicService {
         Event event = eventRepository.findByIdAndState(id, PUBLISHED).orElseThrow(() ->
                 new EventNotFoundException("Event not found"));
 
-        Event save = event;
+        Event updateEvent = event;
 
         if (!existIp) {
             event.setViews(event.getViews() + 1);
-            save = eventRepository.save(event);
+            updateEvent = eventRepository.save(event);
         }
 
-        log.info("EventPublicServiceImpl findEventById: {}", save);
-        return toEventFullDto(save);
+        List<Comment> commentsByEventId = commentRepository.findCommentsByEventId(id);
+        EventFullDto eventFullDto = toEventFullDto(updateEvent);
+        eventFullDto.setComments(toCommentDtoList(commentsByEventId));
+
+        log.info("EventPublicServiceImpl findEventById: {}", updateEvent);
+        return eventFullDto;
     }
 }
