@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.main.comment.model.Comment;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment,Long> {
@@ -16,4 +17,6 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
                                                                                String text, Pageable pageable);
 
     Page<Comment> findAll(Specification<Comment> specification, Pageable pageable);
+
+    Optional<Comment> findCommentByActor_IdAndEvent_IdAndId(Long eventId, Long userId, Long commentId);
 }

@@ -23,6 +23,7 @@ import ru.practicum.main.user.exception.UserNotFoundException;
 import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repositories.UserRepository;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import static ru.practicum.main.comment.mapper.CommentMapperUtil.*;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class CommentPrivateServiceImpl implements CommentPrivateService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
@@ -87,8 +89,8 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
         checkUserExist(userId);
         checkEventExist(eventId);
 
-        Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
-                new CommentNotFoundException("Comment not found"));
+        Comment comment = commentRepository.findCommentByActor_IdAndEvent_IdAndId(userId,eventId,commentId)
+                .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
 
         checkOwnerComment(userId, comment);
 

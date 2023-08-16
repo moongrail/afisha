@@ -17,7 +17,7 @@ public class CommentFullDto {
     private Long id;
     private String text;
     private User actor;
-    private Event event;
+    private Long eventId;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

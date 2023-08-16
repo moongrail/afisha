@@ -37,7 +37,7 @@ public class CommentMapperUtil {
                 .id(comment.getId())
                 .text(comment.getText())
                 .actor(comment.getActor())
-                .event(comment.getEvent())
+                .eventId(comment.getEvent().getId())
                 .created(comment.getCreated())
                 .modified(comment.getModified())
                 .build();
