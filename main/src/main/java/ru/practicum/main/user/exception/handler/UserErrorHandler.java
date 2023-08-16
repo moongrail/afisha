@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static java.time.LocalDateTime.now;
 
-@RestControllerAdvice(basePackageClasses = UserAdminController.class)
+@RestControllerAdvice(basePackages = "ru.practicum.main")
 public class UserErrorHandler {
     @ExceptionHandler(UserNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
