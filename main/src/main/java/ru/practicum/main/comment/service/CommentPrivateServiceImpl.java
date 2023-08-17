@@ -13,7 +13,6 @@ import ru.practicum.main.comment.dto.CommentRequestCreateDto;
 import ru.practicum.main.comment.dto.CommentRequestUpdateDto;
 import ru.practicum.main.comment.exception.CommentConflictException;
 import ru.practicum.main.comment.exception.CommentNotFoundException;
-import ru.practicum.main.comment.mapper.CommentMapperUtil;
 import ru.practicum.main.comment.model.Comment;
 import ru.practicum.main.comment.repository.CommentRepository;
 import ru.practicum.main.event.exception.EventNotFoundException;
@@ -24,10 +23,9 @@ import ru.practicum.main.user.model.User;
 import ru.practicum.main.user.repositories.UserRepository;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.time.LocalDateTime.*;
+import static java.time.LocalDateTime.now;
 import static ru.practicum.main.comment.mapper.CommentMapperUtil.*;
 
 @Service
@@ -38,6 +36,12 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
+
+    private static void checkOwnerComment(Long userId, Comment comment) {
+        if (!comment.getActor().getId().equals(userId)) {
+            throw new CommentConflictException("Comment conflict exception");
+        }
+    }
 
     @Override
     public CommentDto createComment(Long userId, Long eventId, CommentRequestCreateDto requestCreateDto) {
@@ -51,6 +55,7 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
 
         Comment save = commentRepository.save(comment);
 
+        log.info("Comment created: {}", save);
         return toCommentDto(save);
     }
 
@@ -67,9 +72,9 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
         comment.setText(requestUpdateDto.getText());
         comment.setModified(now());
 
+        log.info("Comment updated: {}", requestUpdateDto.getText());
         return toCommentDto(commentRepository.save(comment));
     }
-
 
     @Override
     public void deleteComment(Long userId, Long eventId, Long commentId) {
@@ -81,6 +86,7 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
 
         checkOwnerComment(userId, comment);
 
+        log.info("Comment deleted: {}", commentId);
         commentRepository.deleteById(commentId);
     }
 
@@ -89,26 +95,27 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
         checkUserExist(userId);
         checkEventExist(eventId);
 
-        Comment comment = commentRepository.findCommentByActor_IdAndEvent_IdAndId(userId,eventId,commentId)
+        Comment comment = commentRepository.findCommentByActor_IdAndEvent_IdAndId(userId, eventId, commentId)
                 .orElseThrow(() -> new CommentNotFoundException("Comment not found"));
 
         checkOwnerComment(userId, comment);
 
-
+        log.info("Comment found: {}", comment);
         return toCommentFullDto(comment);
     }
 
     @Override
-    public List<CommentFullDto> findAllCommentsByUserIdAndEventId(Long userId, Long eventId ,Integer from, Integer size) {
+    public List<CommentFullDto> findAllCommentsByUserIdAndEventId(Long userId, Long eventId, Integer from, Integer size) {
         checkUserExist(userId);
         checkEventExist(eventId);
 
         Pageable pageable = PageRequest.of(from, size, Sort.Direction.DESC, "id");
 
         List<Comment> comments = commentRepository
-                .findCommentsByActor_IdAndEvent_Id(eventId, userId, pageable)
+                .findCommentsByActor_IdAndEvent_Id(userId, eventId, pageable)
                 .getContent();
 
+        log.info("Comments found: {}", comments);
         return toCommentFullDtoList(comments);
     }
 
@@ -121,8 +128,9 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
         Pageable pageable = PageRequest.of(from, size, Sort.Direction.DESC, "id");
 
         Page<Comment> commentsByActorIdAndEventIdAndTextContainingIgnoreCase = commentRepository
-                .findCommentsByActor_IdAndEvent_IdAndTextContainingIgnoreCase(eventId, userId, text, pageable);
+                .findCommentsByActor_IdAndEvent_IdAndTextContainingIgnoreCase(userId, eventId, text, pageable);
 
+        log.info("Comments found: {}", commentsByActorIdAndEventIdAndTextContainingIgnoreCase);
         return toCommentFullDtoList(commentsByActorIdAndEventIdAndTextContainingIgnoreCase.getContent());
     }
 
@@ -135,12 +143,6 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     private void checkUserExist(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException("User not found");
-        }
-    }
-
-    private static void checkOwnerComment(Long userId, Comment comment) {
-        if (!comment.getActor().getId().equals(userId)) {
-            throw new CommentConflictException("Comment conflict exception");
         }
     }
 }

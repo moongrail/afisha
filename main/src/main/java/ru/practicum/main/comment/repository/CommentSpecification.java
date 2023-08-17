@@ -18,10 +18,10 @@ public class CommentSpecification {
     }
 
     public static Specification<Comment> commentDateAfterOrEqual(LocalDateTime rangeStart) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("eventDate"), rangeStart);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("created"), rangeStart);
     }
 
     public static Specification<Comment> commentDateBeforeOrEqual(LocalDateTime rangeEnd) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("eventDate"), rangeEnd);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("created"), rangeEnd);
     }
 }

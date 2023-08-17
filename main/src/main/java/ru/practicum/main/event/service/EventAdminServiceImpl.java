@@ -12,7 +12,7 @@ import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repositories.CategoryRepository;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.UpdateEventAdminRequest;
-import ru.practicum.main.event.exception.EventDatePatameterException;
+import ru.practicum.main.event.exception.EventDateParameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.exception.EventStateConflictException;
 import ru.practicum.main.event.model.Event;
@@ -143,7 +143,7 @@ public class EventAdminServiceImpl implements EventAdminService {
     private void checkEventDate(LocalDateTime eventDate) {
         LocalDateTime checkDate = now().plusHours(2);
         if (eventDate.isBefore(checkDate)) {
-            throw new EventDatePatameterException("Event date error");
+            throw new EventDateParameterException("Event date error");
         }
     }
 }

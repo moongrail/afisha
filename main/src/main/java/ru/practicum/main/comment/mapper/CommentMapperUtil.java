@@ -6,7 +6,6 @@ import ru.practicum.main.comment.dto.CommentFullDto;
 import ru.practicum.main.comment.dto.CommentRequestCreateDto;
 import ru.practicum.main.comment.model.Comment;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,7 +48,7 @@ public class CommentMapperUtil {
                 .build();
     }
 
-    public  static List<CommentFullDto> toCommentFullDtoList(List<Comment> comments) {
+    public static List<CommentFullDto> toCommentFullDtoList(List<Comment> comments) {
         return comments.stream()
                 .map(CommentMapperUtil::toCommentFullDto)
                 .collect(Collectors.toList());

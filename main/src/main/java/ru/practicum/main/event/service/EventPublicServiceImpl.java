@@ -7,13 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import ru.practicum.main.comment.mapper.CommentMapperUtil;
 import ru.practicum.main.comment.model.Comment;
 import ru.practicum.main.comment.repository.CommentRepository;
 import ru.practicum.main.event.dto.EventFullDto;
 import ru.practicum.main.event.dto.EventShortDto;
 import ru.practicum.main.event.dto.EventTypeSort;
-import ru.practicum.main.event.exception.EventDatePatameterException;
+import ru.practicum.main.event.exception.EventDateParameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.model.Event;
 import ru.practicum.main.event.repositories.EventRepository;
@@ -23,7 +22,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static ru.practicum.main.comment.mapper.CommentMapperUtil.*;
+import static ru.practicum.main.comment.mapper.CommentMapperUtil.toCommentDtoList;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventFullDto;
 import static ru.practicum.main.event.mapper.EventMapperUtil.toEventShortDtoList;
 import static ru.practicum.main.event.model.EventState.PUBLISHED;
@@ -43,7 +42,7 @@ public class EventPublicServiceImpl implements EventPublicService {
 
         if (rangeStart != null && rangeEnd != null) {
             if (rangeStart.isAfter(rangeEnd)) {
-                throw new EventDatePatameterException("rangeStart must be before rangeEnd");
+                throw new EventDateParameterException("rangeStart must be before rangeEnd");
             }
         }
 

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.main.common.ApiError;
 import ru.practicum.main.event.exception.EventConflictException;
-import ru.practicum.main.event.exception.EventDatePatameterException;
+import ru.practicum.main.event.exception.EventDateParameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.exception.EventStateConflictException;
 
@@ -45,10 +45,10 @@ public class EventErrorHandler {
                 .build();
     }
 
-    @ExceptionHandler(EventDatePatameterException.class)
+    @ExceptionHandler(EventDateParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ApiError handleEventDateConflictException(EventDatePatameterException ex) {
+    public ApiError handleEventDateConflictException(EventDateParameterException ex) {
         return ApiError.builder()
                 .errors(Arrays.stream(ex.getStackTrace()).collect(Collectors.toList()))
                 .status(HttpStatus.BAD_REQUEST)

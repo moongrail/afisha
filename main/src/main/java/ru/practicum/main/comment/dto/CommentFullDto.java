@@ -2,10 +2,8 @@ package ru.practicum.main.comment.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.main.event.model.Event;
 import ru.practicum.main.user.model.User;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
@@ -13,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 public class CommentFullDto {
     private Long id;
     private String text;

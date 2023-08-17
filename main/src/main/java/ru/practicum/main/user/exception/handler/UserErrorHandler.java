@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.main.common.ApiError;
-import ru.practicum.main.user.controller.UserAdminController;
 import ru.practicum.main.user.exception.PaginationParameterException;
 import ru.practicum.main.user.exception.UserNotFoundException;
 import ru.practicum.main.user.exception.UserParameterException;

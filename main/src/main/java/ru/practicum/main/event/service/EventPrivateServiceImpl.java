@@ -13,7 +13,7 @@ import ru.practicum.main.comment.model.Comment;
 import ru.practicum.main.comment.repository.CommentRepository;
 import ru.practicum.main.event.dto.*;
 import ru.practicum.main.event.exception.EventConflictException;
-import ru.practicum.main.event.exception.EventDatePatameterException;
+import ru.practicum.main.event.exception.EventDateParameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.exception.EventStateConflictException;
 import ru.practicum.main.event.model.Event;
@@ -287,7 +287,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     private void checkEventDate(LocalDateTime eventDate) {
         if (eventDate.isBefore(now().plusHours(2))) {
-            throw new EventDatePatameterException("Event date conflict");
+            throw new EventDateParameterException("Event date conflict");
         }
     }
 }

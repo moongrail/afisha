@@ -11,14 +11,15 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CommentRepository extends JpaRepository<Comment,Long> {
+public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findCommentsByActor_IdAndEvent_Id(Long eventId, Long userId, Pageable pageable);
-    Page<Comment> findCommentsByActor_IdAndEvent_IdAndTextContainingIgnoreCase(Long eventId, Long userId,
+
+    Page<Comment> findCommentsByActor_IdAndEvent_IdAndTextContainingIgnoreCase(Long userId, Long eventId,
                                                                                String text, Pageable pageable);
 
     Page<Comment> findAll(Specification<Comment> specification, Pageable pageable);
 
-    Optional<Comment> findCommentByActor_IdAndEvent_IdAndId(Long eventId, Long userId, Long commentId);
+    Optional<Comment> findCommentByActor_IdAndEvent_IdAndId(Long userId, Long eventId, Long commentId);
 
     List<Comment> findCommentsByEventId(Long eventId);
 }
