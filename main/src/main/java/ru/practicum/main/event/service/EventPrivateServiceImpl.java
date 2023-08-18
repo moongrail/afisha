@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import ru.practicum.main.category.exception.CategoryNotFoundException;
 import ru.practicum.main.category.model.Category;
 import ru.practicum.main.category.repositories.CategoryRepository;
+import ru.practicum.main.comment.model.Comment;
+import ru.practicum.main.comment.repository.CommentRepository;
 import ru.practicum.main.event.dto.*;
 import ru.practicum.main.event.exception.EventConflictException;
-import ru.practicum.main.event.exception.EventDatePatameterException;
+import ru.practicum.main.event.exception.EventDateParameterException;
 import ru.practicum.main.event.exception.EventNotFoundException;
 import ru.practicum.main.event.exception.EventStateConflictException;
 import ru.practicum.main.event.model.Event;
@@ -33,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
+import static ru.practicum.main.comment.mapper.CommentMapperUtil.toCommentDtoList;
 import static ru.practicum.main.event.mapper.EventMapperUtil.*;
 import static ru.practicum.main.event.model.EventState.PUBLISHED;
 import static ru.practicum.main.request.mapper.RequestMapperUtil.toParticipationRequestDtoList;
@@ -46,6 +49,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
     private final UserRepository userRepository;
     private final RequestRepository requestRepository;
     private final CategoryRepository categoryRepository;
+    private final CommentRepository commentRepository;
 
     @Override
     public List<EventShortDto> findAllByUserId(Long userId, Integer from, Integer size) {
@@ -77,8 +81,12 @@ public class EventPrivateServiceImpl implements EventPrivateService {
         Event event = eventRepository.findEventByInitiatorIdAndId(userId, eventId).orElseThrow(() ->
                 new EventNotFoundException("Event not found by id = " + eventId));
 
+        EventFullDto eventFullDto = toEventFullDto(event);
+        List<Comment> commentsByEventId = commentRepository.findCommentsByEventId(eventId);
+        eventFullDto.setComments(toCommentDtoList(commentsByEventId));
+
         log.info("findEventByUserIdAndEventId-findEventByUserIdAndEventId: {}", event);
-        return toEventFullDto(event);
+        return eventFullDto;
     }
 
     @Override
@@ -279,7 +287,7 @@ public class EventPrivateServiceImpl implements EventPrivateService {
 
     private void checkEventDate(LocalDateTime eventDate) {
         if (eventDate.isBefore(now().plusHours(2))) {
-            throw new EventDatePatameterException("Event date conflict");
+            throw new EventDateParameterException("Event date conflict");
         }
     }
 }
