@@ -11,6 +11,7 @@ https://github.com/moongrail/java-explore-with-me/pull/5
 работы приложения.
 
 ### Схема DB основного приложения.
+![dipl_scheme](https://github.com/moongrail/java-explore-with-me/assets/97224620/4edf4655-1d88-48d9-95fc-8c0d3b5dc0e1)
 
 ### Спецификации API приложения:
 1) Содержит api для главного сервиса [ewm-main-service-spec.json](ewm-main-service-spec.json) 
